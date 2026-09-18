@@ -1,4 +1,4 @@
 window.MCF_CONFIG = {
-  supabaseUrl: "https://TON-PROJET.supabase.co",
-  supabaseAnonKey: "TA-CLE-PUBLIQUE-ANON"
+  supabaseUrl: "https://gsdaltrmmoirmzpatykf.supabase.co/rest/v1/",
+  supabaseAnonKey: "sb_publishable_guZh8JhM6A7KwpAkr8kOaw_09FXMNf_"
 };
