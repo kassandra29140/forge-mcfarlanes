@@ -249,7 +249,7 @@ body{
 }
 .forge-hero:before{z-index:2;margin:8px;border-color:rgba(234,154,76,.27)}
 .hero-image{display:block;width:100%;height:auto;max-width:none;object-fit:contain}
-.hero-caption{
+.hero-caption{display:none;
   position:absolute;z-index:3;left:26px;bottom:18px;padding:9px 14px 8px;
   border:1px solid rgba(222,145,71,.62);
   background:rgba(11,7,5,.82);box-shadow:0 7px 20px rgba(0,0,0,.48);
@@ -325,7 +325,7 @@ tbody tr:hover{background:#1d140e}
 .login-screen{
   background:
     linear-gradient(90deg,rgba(5,3,2,.76),rgba(5,3,2,.22) 55%,rgba(5,3,2,.72)),
-    url('./forge-hero-cinematic.jpg') center/cover no-repeat,
+    url('./forge-mcfarlanes-final.png') center/cover no-repeat,
     linear-gradient(180deg,#21120b,#050302);
 }
 .login-card{border-radius:3px;background:linear-gradient(180deg,rgba(31,22,16,.97),rgba(12,9,7,.99))}
@@ -343,13 +343,13 @@ tbody tr:hover{background:#1d140e}
   .grid.cards,.three,.two,.history-grid{grid-template-columns:1fr}
   .latest-grid{grid-template-columns:1fr}
   .dashboard-week{grid-template-columns:1fr}.week-note{grid-column:1}
-  .hero-caption{left:12px;bottom:10px}
+  .hero-caption{display:none;left:12px;bottom:10px}
 }
 @media(max-width:520px){
   .nav{grid-template-columns:1fr}
   .topbar{display:block}.topbar-account{margin-top:9px;align-items:flex-start;flex-direction:row;justify-content:space-between}
   .top-userbox{padding-left:0;min-width:0}
-  .hero-caption{display:none}
+  .hero-caption{display:none;display:none}
 }
 </style>
 
@@ -420,11 +420,7 @@ tbody tr:hover{background:#1d140e}
 
       <section class="page active" id="dashboard">
         <div class="forge-hero">
-          <img class="hero-image" src="./forge-hero-cinematic.jpg" alt="Atelier de la Forge de McFarlane's">
-          <div class="hero-caption" aria-hidden="true">
-            <span>FORGE DE McFARLANE'S</span>
-            <strong>TRADITION • QUALITÉ • PASSION</strong>
-          </div>
+          <img class="hero-image" src="./forge-mcfarlanes-final.png" alt="Atelier de la Forge de McFarlane's">
         </div>
 
         <div class="grid cards">
@@ -624,12 +620,11 @@ function calc(){
  const beforeCharges=o+s,beforeTax=beforeCharges-e,tax=Math.max(0,beforeTax*(Number(settings.tax_rate)/100)),net=beforeTax-tax,boss=Math.max(0,net*(Number(settings.boss_rate)/100));
  return{o,s,e,beforeCharges,beforeTax,tax,net,boss}
 }
-function nav(page){
+window.nav=function nav(page){
  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
  $(page).classList.add('active');document.querySelector(`.nav button[data-page="${page}"]`)?.classList.add('active');
  $('pageTitle').textContent=({dashboard:'Tableau de bord',profil:'Mon profil',commandes:'Commandes',echoppe:'Échoppe',charges:'Charges',taxes:'Taxes',historique:'Historique',membres:'Membres',parametres:'Paramètres'})[page]||page;render();
 }
-window.nav=nav;
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.page)));
 
 async function loadAll(){
