@@ -55,7 +55,7 @@ button,input,select{font:inherit}.hidden{display:none!important}.small{color:var
   min-height:100vh;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden;
   background:
     linear-gradient(180deg,rgba(5,3,2,.42),rgba(5,3,2,.94)),
-    url('./forge-banner.jpg') center/cover no-repeat,
+    url('./forge-mcfarlanes-final.png') center/cover no-repeat,
     linear-gradient(180deg,#21120b,#050302);
 }
 .login-screen:before{
@@ -114,7 +114,7 @@ input:disabled{opacity:.78;color:#bba88e}
 .forge-hero{position:relative;aspect-ratio:1575/450;min-height:0;margin-bottom:18px;border:2px solid #71431e;overflow:hidden;background:
   linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.06) 45%,rgba(0,0,0,.28)),
   linear-gradient(0deg,rgba(5,3,2,.32),transparent 58%),
-  url('./forge-banner-wide.jpg') center/100% 100% no-repeat,#1c1009;box-shadow:var(--shadow),inset 0 0 0 5px rgba(0,0,0,.34)}
+  url('./forge-mcfarlanes-final.png') center/100% 100% no-repeat,#1c1009;box-shadow:var(--shadow),inset 0 0 0 5px rgba(0,0,0,.34)}
 .forge-hero:before{content:"";position:absolute;inset:0;border:1px solid rgba(232,164,90,.26);margin:8px;pointer-events:none}
 .hero-plaque{position:absolute;left:24px;bottom:22px;max-width:560px;padding:16px 19px;border:1px solid #966033;background:rgba(20,12,8,.88);box-shadow:0 12px 28px rgba(0,0,0,.5),inset 0 0 0 2px rgba(0,0,0,.4)}
 .hero-plaque small{display:block;color:#dda566;letter-spacing:.14em;margin-bottom:5px}.hero-plaque h3{font-family:"Rye",serif;margin:0;color:#f4d5aa;font-size:1.55rem}.hero-plaque p{margin:7px 0 0;color:#cdb497;line-height:1.5}
@@ -350,6 +350,288 @@ tbody tr:hover{background:#1d140e}
   .topbar{display:block}.topbar-account{margin-top:9px;align-items:flex-start;flex-direction:row;justify-content:space-between}
   .top-userbox{padding-left:0;min-width:0}
   .hero-caption{display:none;display:none}
+}
+</style>
+
+
+<style id="forge-controls-upgrade">
+/* ==========================================================
+   MENU & BOUTONS — VERSION FORGE RENFORCÉE
+   ========================================================== */
+
+/* Menu latéral */
+.nav{
+  display:grid;
+  gap:10px;
+  padding:4px 2px;
+}
+
+.nav button{
+  position:relative;
+  overflow:hidden;
+  min-height:58px;
+  padding:14px 18px 14px 48px;
+  border:1px solid #6e4326;
+  border-radius:7px;
+  color:#e8d3b6;
+  font-family:Georgia,serif;
+  font-size:1rem;
+  font-weight:700;
+  letter-spacing:.015em;
+  text-shadow:0 1px 2px #000;
+  background:
+    radial-gradient(circle at 14px 50%,rgba(230,147,70,.12),transparent 16px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#2b2018 0%,#17110d 48%,#0d0907 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -2px 0 rgba(0,0,0,.55),
+    inset 4px 0 0 rgba(126,73,34,.14),
+    0 4px 10px rgba(0,0,0,.34);
+  transition:
+    transform .16s ease,
+    border-color .16s ease,
+    box-shadow .16s ease,
+    color .16s ease,
+    background .16s ease;
+}
+
+/* Petit rivet à gauche */
+.nav button::after{
+  content:"";
+  position:absolute;
+  left:15px;
+  top:50%;
+  width:12px;
+  height:12px;
+  transform:translateY(-50%);
+  border-radius:50%;
+  border:1px solid #8b5a32;
+  background:
+    radial-gradient(circle at 36% 30%,#d5a166 0 14%,#74431f 35%,#2a180e 72%);
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,.45),
+    inset 0 1px 1px rgba(255,255,255,.2);
+}
+
+.nav button::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:8px;
+  bottom:8px;
+  width:4px;
+  border-radius:0 4px 4px 0;
+  background:#4b2b18;
+  box-shadow:none;
+  transition:.16s ease;
+}
+
+.nav button:hover{
+  transform:translateX(4px);
+  color:#fff0d7;
+  border-color:#b16b32;
+  background:
+    radial-gradient(circle at 14px 50%,rgba(255,151,55,.18),transparent 18px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.023) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#3b281a 0%,#20150f 48%,#100b08 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.1),
+    inset 0 -2px 0 rgba(0,0,0,.6),
+    0 6px 15px rgba(0,0,0,.42),
+    0 0 10px rgba(189,94,31,.09);
+}
+
+.nav button:hover::before{
+  background:#d67828;
+  box-shadow:0 0 10px rgba(255,127,31,.45);
+}
+
+.nav button.active{
+  transform:translateX(5px);
+  color:#fff4e2;
+  border-color:#dc8534;
+  background:
+    radial-gradient(circle at 14px 50%,rgba(255,174,73,.24),transparent 19px),
+    linear-gradient(90deg,rgba(188,76,18,.38),rgba(76,37,18,.58) 45%,rgba(17,11,8,.96)),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -2px 0 rgba(0,0,0,.65),
+    inset 5px 0 15px rgba(221,102,27,.13),
+    0 5px 15px rgba(0,0,0,.45),
+    0 0 15px rgba(218,104,28,.15);
+}
+
+.nav button.active::before{
+  background:#ff912b;
+  box-shadow:
+    0 0 8px #ff7a1e,
+    0 0 16px rgba(255,95,12,.55);
+}
+
+.nav button.active::after{
+  border-color:#d9944c;
+  background:
+    radial-gradient(circle at 36% 30%,#ffe0a8 0 13%,#bf6b28 35%,#4b2412 72%);
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,.48),
+    0 0 9px rgba(229,126,45,.28);
+}
+
+/* Tous les boutons d'action */
+.btn{
+  position:relative;
+  overflow:hidden;
+  min-height:40px;
+  padding:10px 16px;
+  border-radius:6px;
+  border:1px solid #8c562d;
+  color:#f7e5ca;
+  font-family:Georgia,serif;
+  font-weight:800;
+  letter-spacing:.015em;
+  text-shadow:0 1px 2px rgba(0,0,0,.9);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.08),transparent 28%),
+    linear-gradient(180deg,#704727,#3d2415 58%,#24140c);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -2px 0 rgba(0,0,0,.48),
+    0 4px 9px rgba(0,0,0,.34);
+  transition:
+    transform .14s ease,
+    filter .14s ease,
+    box-shadow .14s ease,
+    border-color .14s ease;
+}
+
+.btn::before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  pointer-events:none;
+  border:1px solid rgba(255,224,181,.08);
+  border-radius:4px;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.12);
+  border-color:#c17a3d;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.17),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 7px 14px rgba(0,0,0,.38),
+    0 0 10px rgba(202,105,36,.11);
+}
+
+.btn:active{
+  transform:translateY(1px);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,.42),
+    0 2px 4px rgba(0,0,0,.28);
+}
+
+/* Bouton principal orange/cuivre */
+.btn.gold{
+  color:#fff4df;
+  border-color:#dd8532;
+  background:
+    linear-gradient(180deg,rgba(255,230,177,.14),transparent 27%),
+    linear-gradient(180deg,#d27025 0%,#a8440e 52%,#6c2709 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,237,204,.22),
+    inset 0 -2px 0 rgba(75,22,3,.58),
+    0 4px 11px rgba(0,0,0,.38),
+    0 0 10px rgba(202,82,19,.12);
+}
+
+/* Enregistrer / positif */
+.btn.green{
+  border-color:#608c62;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.10),transparent 28%),
+    linear-gradient(180deg,#527c52,#315636 58%,#1d3824);
+}
+
+/* Danger */
+.btn.red{
+  border-color:#a64a3a;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.09),transparent 28%),
+    linear-gradient(180deg,#9e493c,#6c2a25 58%,#421916);
+}
+
+/* Modification */
+.btn.blue{
+  border-color:#587e94;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.09),transparent 28%),
+    linear-gradient(180deg,#55788d,#345166 58%,#213845);
+}
+
+/* Petits boutons dans les panneaux */
+.btn.mini{
+  min-height:34px;
+  padding:7px 11px;
+  border-color:#765036;
+  color:#e8cda9;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.06),transparent 25%),
+    linear-gradient(180deg,#302219,#17100c);
+}
+
+/* Bouton déconnexion plus affirmé */
+.top-logout{
+  min-width:122px;
+  border-color:#a34b39;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.08),transparent 25%),
+    linear-gradient(180deg,#893b31,#5a241f 60%,#361512);
+}
+
+/* Rôle sous forme de plaque métallique */
+.role-badge{
+  border:1px solid #a76b36;
+  color:#ffdca8;
+  background:
+    linear-gradient(180deg,#3c281a,#1b120d);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.08),
+    0 2px 5px rgba(0,0,0,.28);
+}
+
+/* Inputs pour aller avec les boutons */
+input,select,textarea{
+  border:1px solid #6d4930;
+  background:
+    linear-gradient(180deg,#15100d,#0c0907);
+  color:#f1dcc0;
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,.45),
+    0 1px rgba(255,255,255,.02);
+}
+
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  border-color:#c87932;
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,.45),
+    0 0 0 2px rgba(207,105,35,.12),
+    0 0 10px rgba(212,102,28,.10);
+}
+
+/* Mobile */
+@media(max-width:760px){
+  .nav button{
+    min-height:52px;
+    padding-left:44px;
+  }
+  .nav button:hover,
+  .nav button.active{
+    transform:none;
+  }
 }
 </style>
 
