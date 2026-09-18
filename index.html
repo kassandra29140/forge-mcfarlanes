@@ -1160,7 +1160,7 @@ input:focus,select:focus,textarea:focus{
 
       <section class="page" id="membres">
         <div class="panel"><div class="panel-head"><div><h3>Inviter un membre</h3></div></div><div class="panel-body">
-          <div class="grid three"><div><label>Nom affiché</label><input id="inviteName"></div><div><label>Email</label><input id="inviteEmail" type="email"></div><div><label>Rôle</label><select id="inviteRole"><option value="employee">Employé</option><option value="viewer">Lecture seule</option><option value="admin">Patron / Admin</option></select></div></div>
+          <div class="grid three"><div><label>Nom affiché</label><input id="inviteName"></div><div><label>Email</label><input id="inviteEmail" type="email"></div><div><label>Rôle</label><select id="inviteRole"><option value="employee">Contre-maître</option><option value="viewer">Employé</option><option value="admin">Patron</option></select></div></div>
           <button class="btn green" style="margin-top:13px" onclick="inviteMember()">Envoyer l'invitation</button><div id="inviteStatus" class="status"></div>
         </div></div>
         <div class="panel"><div class="panel-head"><div><h3>Membres</h3></div></div><div class="panel-body table-wrap" id="membersTable"></div></div>
@@ -1190,7 +1190,7 @@ function money(n){return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,
 function isoToday(){return new Date().toISOString().slice(0,10)}
 function fmtDate(iso){if(!iso)return'—';return new Intl.DateTimeFormat('fr-FR',{day:'numeric',month:'long',year:'numeric'}).format(new Date(iso+'T12:00:00'))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function roleLabel(r){return({admin:'Patron / Admin',employee:'Employé',viewer:'Lecture seule'})[r]||r}
+function roleLabel(r){return({admin:'Patron',employee:'Contre-maître',viewer:'Employé'})[r]||r}
 function profileName(id){return profiles.find(p=>p.id===id)?.display_name||'Membre'}
 function inCurrentPeriod(date){return period&&date>=period.period_start&&date<=period.period_end}
 function periodText(p=period){return p?`Du ${fmtDate(p.period_start)} au ${fmtDate(p.period_end)}`:'—'}
@@ -1512,9 +1512,9 @@ function membersHTML(){
        <td>${p.id===session.user.id
          ? esc(roleLabel(p.role))
          : `<select onchange="changeRole('${p.id}',this.value)">
-              <option value="employee" ${p.role==='employee'?'selected':''}>Employé</option>
-              <option value="viewer" ${p.role==='viewer'?'selected':''}>Lecture seule</option>
-              <option value="admin" ${p.role==='admin'?'selected':''}>Patron / Admin</option>
+              <option value="employee" ${p.role==='employee'?'selected':''}>Contre-maître</option>
+              <option value="viewer" ${p.role==='viewer'?'selected':''}>Employé</option>
+              <option value="admin" ${p.role==='admin'?'selected':''}>Patron</option>
             </select>`}
        </td>
      </tr>`).join('')}
