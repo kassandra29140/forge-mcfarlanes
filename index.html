@@ -752,6 +752,189 @@ input:focus,select:focus,textarea:focus{
 }
 </style>
 
+
+<style id="forge-stats-v4">
+/* ==========================================================
+   CARTES CHIFFRES — MÉTAL FORGÉ
+   ========================================================== */
+
+.grid.cards{
+  gap:16px;
+  margin:16px 0 20px;
+}
+
+.stat{
+  position:relative;
+  min-height:142px;
+  padding:22px 20px 20px 88px;
+  overflow:hidden;
+  border:1px solid #5f3d26;
+  border-radius:7px;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(215,102,28,.10),transparent 25%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 5px),
+    linear-gradient(145deg,#211812 0%,#15100c 52%,#0b0806 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    inset 0 -2px 0 rgba(0,0,0,.55),
+    inset 0 0 0 4px rgba(0,0,0,.16),
+    0 12px 26px rgba(0,0,0,.42);
+}
+
+/* légère texture martelée */
+.stat::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.24;
+  background:
+    radial-gradient(circle at 15% 30%,rgba(255,255,255,.05) 0 1px,transparent 2px),
+    radial-gradient(circle at 65% 18%,rgba(255,255,255,.035) 0 1px,transparent 2px),
+    radial-gradient(circle at 42% 72%,rgba(255,255,255,.03) 0 1px,transparent 2px);
+  background-size:34px 31px,43px 39px,51px 47px;
+}
+
+/* barre cuivre basse */
+.stat::after{
+  content:"";
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#7c4928,#d07a32,#7c4928,transparent);
+  opacity:.75;
+}
+
+.stat-icon{
+  position:absolute;
+  left:20px;
+  top:50%;
+  transform:translateY(-50%);
+  width:50px;
+  height:50px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  border:1px solid #8b542d;
+  color:#e9ad62;
+  font-size:1.25rem;
+  background:
+    radial-gradient(circle at 35% 28%,rgba(255,224,176,.12),transparent 25%),
+    linear-gradient(180deg,#342318,#17100c);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -3px 8px rgba(0,0,0,.55),
+    0 0 0 4px rgba(0,0,0,.26),
+    0 4px 9px rgba(0,0,0,.35);
+}
+
+.stat .label{
+  position:relative;
+  z-index:1;
+  margin:0 0 10px;
+  color:#b98755;
+  font-family:Georgia,serif;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.stat .value{
+  position:relative;
+  z-index:1;
+  margin:0;
+  color:#f2ddc0;
+  font-family:Georgia,serif;
+  font-size:2rem;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:.01em;
+  text-shadow:
+    0 2px 0 #000,
+    0 0 12px rgba(222,130,51,.08);
+}
+
+/* petit accent vertical à gauche */
+.stat .value::before{
+  content:"";
+  position:absolute;
+  left:-14px;
+  top:2px;
+  width:3px;
+  height:28px;
+  border-radius:2px;
+  background:#8a4e27;
+  box-shadow:0 0 7px rgba(205,102,31,.16);
+}
+
+/* variations discrètes */
+.grid.cards .stat:nth-child(1){
+  border-color:#67503a;
+}
+.grid.cards .stat:nth-child(1) .stat-icon{
+  color:#d8d1c5;
+}
+
+.grid.cards .stat:nth-child(2){
+  border-color:#6f4728;
+}
+.grid.cards .stat:nth-child(2) .stat-icon{
+  color:#e2a451;
+}
+
+.grid.cards .stat:nth-child(3){
+  border-color:#6a4026;
+}
+.grid.cards .stat:nth-child(3) .stat-icon{
+  color:#d08e56;
+}
+
+.grid.cards .stat:nth-child(4){
+  border-color:#6b5830;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(181,130,49,.11),transparent 25%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 5px),
+    linear-gradient(145deg,#211b11 0%,#15110b 52%,#0b0806 100%);
+}
+.grid.cards .stat:nth-child(4) .stat-icon{
+  color:#e2c16d;
+  border-color:#88703b;
+}
+
+/* hover très discret */
+.stat{
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.stat:hover{
+  transform:translateY(-2px);
+  border-color:#925b31;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -2px 0 rgba(0,0,0,.58),
+    inset 0 0 0 4px rgba(0,0,0,.16),
+    0 16px 30px rgba(0,0,0,.46),
+    0 0 12px rgba(190,87,25,.07);
+}
+
+@media(max-width:900px){
+  .stat{
+    min-height:120px;
+    padding:18px 16px 18px 78px;
+  }
+  .stat-icon{
+    left:16px;
+    width:46px;
+    height:46px;
+  }
+  .stat .value{
+    font-size:1.65rem;
+  }
+}
+</style>
+
 </head>
 <body>
 <section id="loginScreen" class="login-screen">
