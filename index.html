@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge de McFarlane's — Gestion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{
+  --coal:#070504;--coal2:#100b08;--iron:#302c28;--iron2:#463e37;
+  --ember:#d85817;--ember2:#ff922c;--gold:#f0bd78;
+  --text:#eadbc3;--muted:#baa58b;--line:#875024;
+  --green:#2f7b50;--red:#96372d;--blue:#3c6686;--shadow:0 16px 40px rgba(0,0,0,.42)
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Special Elite",Georgia,serif}
+body{color:var(--text);background:radial-gradient(circle at 12% 4%,rgba(255,125,29,.16),transparent 14%),linear-gradient(180deg,#0b0705,#050302)}
+button,input,select{font:inherit}.hidden{display:none!important}
+.login-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 30%,rgba(220,90,20,.13),transparent 22%),linear-gradient(180deg,rgba(11,7,5,.96),rgba(4,3,2,1))}
+.login-card{width:min(460px,100%);padding:30px;border-radius:18px;border:1px solid #8f5428;background:linear-gradient(180deg,rgba(62,49,40,.98),rgba(28,21,17,.99));box-shadow:var(--shadow)}
+.login-card h1{font-family:"Rye",Georgia,serif;text-align:center;margin:8px 0 4px;color:#f1d0a2;font-size:2rem}
+.login-card .subtitle{text-align:center;color:#b98e62;margin-bottom:24px}
+.field{margin-bottom:14px}label{display:block;margin-bottom:7px;color:#efd7b6;font-weight:700}
+input,select{width:100%;padding:12px 13px;border-radius:9px;outline:none;border:1px solid #8f5326;color:#faead2;background:linear-gradient(180deg,#2d211a,#1c1511)}
+input:focus,select:focus{border-color:#e18134;box-shadow:0 0 0 3px rgba(226,119,40,.16)}
+.error{min-height:1.2em;color:#ff9e91;margin-top:10px}.info,.status{min-height:1.2em;color:#88d8a7;margin-top:10px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:310px;flex:0 0 310px;height:100vh;position:sticky;top:0;padding:18px 15px;overflow:auto;background:linear-gradient(180deg,#0c0907,#15100c);border-right:3px solid #613718}
+.brand{padding:18px 14px;margin-bottom:18px;border-radius:15px;text-align:center;border:1px solid #85502a;background:linear-gradient(180deg,#403229,#211913)}
+.brand h1{font-family:"Rye",serif;color:#f0cea2;font-size:1.65rem;margin:6px 0}.brand p{margin:0;color:#af7f4f;font-size:.9rem}
+.userbox{margin-bottom:16px;padding:12px;border:1px solid #654020;border-radius:10px;background:#17100c;color:#cdb392;font-size:.9rem}
+.userbox strong{display:block;color:#f0d1a7;margin-bottom:4px}.role-badge{display:inline-block;padding:4px 8px;border:1px solid #9b6533;border-radius:999px;color:#f4cf9e;font-size:.78rem;margin-top:6px}
+.nav{display:grid;gap:8px}.nav button{width:100%;text-align:left;padding:12px 14px;border-radius:9px;cursor:pointer;border:1px solid #70431f;color:#d1ad86;background:linear-gradient(180deg,#3e291c,#1f150f)}
+.nav button.active{background:linear-gradient(180deg,#b35619,#5c2a0d);border-color:#e78d3d;color:#fff0d9}.nav button:hover{border-color:#c9742f}.logout{margin-top:18px;width:100%}
+.main{flex:1;min-width:0}.topbar{padding:18px 26px;border-bottom:3px solid #613718;background:linear-gradient(180deg,#17100c,#0c0806)}
+.topbar small{letter-spacing:.24em;color:#c48242}.topbar h2{font-family:"Rye",serif;margin:6px 0 0;color:#efc28a}
+.content{max-width:1450px;margin:auto;padding:24px}.page{display:none}.page.active{display:block}
+.grid{display:grid;gap:16px}.cards{grid-template-columns:repeat(4,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.stat,.panel{border:1px solid #7d4924;border-radius:14px;background:linear-gradient(180deg,#41342b,#261d18);box-shadow:var(--shadow)}
+.stat{padding:18px}.stat .label{font-size:.8rem;color:#c5a987;text-transform:uppercase}.stat .value{font-size:1.8rem;font-weight:800;color:#fff0d8;margin-top:15px}
+.panel{margin-bottom:20px;overflow:hidden}.panel-head{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:15px 20px;border-bottom:1px solid rgba(216,104,31,.16);background:rgba(255,255,255,.02)}
+.panel-head h3{font-family:"Rye",serif;color:#ecc99c;margin:0;font-size:1.18rem}.panel-head p{margin:5px 0 0;color:#baa78e}.panel-body{padding:19px 20px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.btn{cursor:pointer;padding:10px 14px;border-radius:8px;font-weight:700;border:1px solid #74451f;color:#f3ddbd;background:linear-gradient(180deg,#674126,#412410)}
+.btn.gold{background:linear-gradient(180deg,#c65d1c,#8c400e);border-color:#dc8b3e}.btn.green{background:linear-gradient(180deg,#41885d,#2b6847);border-color:#21553a}.btn.red{background:linear-gradient(180deg,#ab4a3f,#842e25);border-color:#68231c}.btn.blue{background:linear-gradient(180deg,#4f7895,#34566f);border-color:#29475e}.btn:disabled{opacity:.5;cursor:not-allowed}
+.note{padding:13px;border:1px dashed #9a5c29;border-radius:9px;color:#d4bea1;background:rgba(207,86,20,.07)}.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px;border-bottom:1px solid rgba(218,119,38,.13);text-align:left}th{font-size:.78rem;text-transform:uppercase;color:#c7aa86}td{color:#ead8c0}.money{text-align:right}.empty{text-align:center;padding:25px;color:#ad9982;font-style:italic}
+.tax-row{display:flex;justify-content:space-between;gap:15px;padding:14px 3px;border-bottom:1px solid rgba(218,119,38,.14)}.tax-row.final{margin-top:8px;border:1px solid #a8612b;border-radius:9px;padding:16px;background:rgba(211,85,19,.09)}
+.week-banner{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 18px;margin-bottom:18px;border-radius:12px;border:1px solid #855024;background:linear-gradient(90deg,#2e211a,#3e2b20,#281d17)}
+.week-banner strong{font-family:"Rye",serif;color:#efc38c}.week-banner span{display:block;color:#bfa88c;margin-top:4px}.closed{color:#ffb08f}.open{color:#88d8a7}.history-card{padding:14px;border:1px solid #73441f;border-radius:10px;background:#241a15;margin-bottom:10px}
+.history-card strong{color:#f0cf9f}.history-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.history-grid div{background:#19110e;border-radius:8px;padding:9px}.history-grid small{display:block;color:#a89278}.history-grid b{color:#f1dfc4}
+@media(max-width:1000px){.sidebar{width:240px;flex-basis:240px}.cards{grid-template-columns:repeat(2,1fr)}.history-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.app{display:block}.sidebar{width:100%;height:auto;position:relative}.nav{grid-template-columns:1fr 1fr}.content{padding:13px}.cards,.three,.two,.history-grid{grid-template-columns:1fr}.week-banner{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<section id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h1>Forge de McFarlane's</h1>
+    <div class="subtitle">Accès au registre de gestion</div>
+    <div id="configWarning" class="note hidden" style="margin-bottom:15px">Configure <strong>config.js</strong> avec ton projet Supabase.</div>
+    <form id="loginForm">
+      <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="email" required></div>
+      <div class="field"><label>Mot de passe</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <button class="btn gold" style="width:100%" type="submit">Entrer dans le registre</button>
+    </form>
+    <div id="loginError" class="error"></div>
+  </div>
+</section>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand"><h1>McFARLANE'S</h1><p>Forge • Livre de comptes</p></div>
+    <div class="userbox"><strong id="currentName">—</strong><span id="currentEmail">—</span><br><span class="role-badge" id="currentRole">—</span></div>
+    <div class="nav">
+      <button class="active" data-page="dashboard">⚒ Tableau de bord</button>
+      <button data-page="commandes">📜 Commandes</button>
+      <button data-page="echoppe">🧾 Échoppe</button>
+      <button data-page="charges">⛏ Charges</button>
+      <button data-page="taxes">💰 Taxes</button>
+      <button data-page="historique">🗄 Historique</button>
+      <button data-page="membres" id="membersNav" class="hidden">👥 Membres</button>
+      <button data-page="parametres" id="settingsNav" class="hidden">⚙ Paramètres</button>
+    </div>
+    <button class="btn red logout" onclick="logout()">Déconnexion</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar"><small>REGISTRE DE GESTION DE LA FORGE</small><h2 id="pageTitle">Tableau de bord</h2></header>
+    <div class="content">
+      <div class="week-banner">
+        <div><strong>Période comptable en cours</strong><span id="currentPeriodLabel">Chargement…</span></div>
+        <div class="actions" id="closeArea"><span class="open">● Ouverte</span><button id="manualCloseBtn" class="btn red hidden" onclick="closeWeek()">Clôturer la semaine</button></div>
+      </div>
+
+      <section class="page active" id="dashboard">
+        <div class="grid cards">
+          <div class="stat"><div class="label">Commandes</div><div class="value" id="dashOrders">0,00 $</div></div>
+          <div class="stat"><div class="label">Échoppe</div><div class="value" id="dashShop">0,00 $</div></div>
+          <div class="stat"><div class="label">Charges</div><div class="value" id="dashExpenses">0,00 $</div></div>
+          <div class="stat"><div class="label">Bénéfice net</div><div class="value" id="dashNet">0,00 $</div></div>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>État du registre</h3><p id="weekDash"></p></div></div><div class="panel-body"><div class="note">La semaine comptable va du vendredi au jeudi. À la clôture, les chiffres sont figés et archivés.</div></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Dernières commandes</h3></div></div><div class="panel-body table-wrap" id="latestOrders"></div></div>
+      </section>
+
+      <section class="page" id="commandes">
+        <div class="panel" id="orderFormPanel"><div class="panel-head"><div><h3>Nouvelle commande</h3></div></div><div class="panel-body">
+          <div class="grid three"><div><label>Date</label><input id="orderDate" type="date"></div><div><label>Client / référence</label><input id="orderClient"></div><div><label>Montant ($)</label><input id="orderAmount" type="number" min="0" step="0.01"></div></div>
+          <div class="field" style="margin-top:13px"><label>Détail</label><input id="orderDetail"></div><button class="btn gold" onclick="addOrder()">+ Ajouter la commande</button><div id="orderStatus" class="status"></div>
+        </div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Registre des commandes</h3></div></div><div class="panel-body table-wrap" id="ordersTable"></div></div>
+      </section>
+
+      <section class="page" id="echoppe">
+        <div class="panel" id="shopFormPanel"><div class="panel-head"><div><h3>Nouvelle vente d'échoppe</h3></div></div><div class="panel-body">
+          <div class="grid three"><div><label>Date</label><input id="shopDate" type="date"></div><div><label>Description</label><input id="shopDetail"></div><div><label>Montant ($)</label><input id="shopAmount" type="number" min="0" step="0.01"></div></div>
+          <button class="btn gold" style="margin-top:13px" onclick="addShop()">+ Ajouter la vente</button><div id="shopStatus" class="status"></div>
+        </div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Registre de l'échoppe</h3></div></div><div class="panel-body table-wrap" id="shopTable"></div></div>
+      </section>
+
+      <section class="page" id="charges">
+        <div class="panel" id="expenseFormPanel"><div class="panel-head"><div><h3>Nouvelle charge</h3></div></div><div class="panel-body">
+          <div class="grid three"><div><label>Date</label><input id="expenseDate" type="date"></div><div><label>Description</label><input id="expenseDetail"></div><div><label>Montant ($)</label><input id="expenseAmount" type="number" min="0" step="0.01"></div></div>
+          <button class="btn gold" style="margin-top:13px" onclick="addExpense()">+ Ajouter la charge</button><div id="expenseStatus" class="status"></div>
+        </div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Registre des charges</h3></div></div><div class="panel-body table-wrap" id="expensesTable"></div></div>
+      </section>
+
+      <section class="page" id="taxes">
+        <div class="panel"><div class="panel-head"><div><h3>Récapitulatif fiscal</h3><p id="weekTax"></p></div><button class="btn gold" onclick="copyTax()">Copier</button></div><div class="panel-body">
+          <div class="tax-row"><span>Commandes</span><strong id="taxOrders">0,00 $</strong></div>
+          <div class="tax-row"><span>Chiffre d'affaires échoppe</span><strong id="taxShop">0,00 $</strong></div>
+          <div class="tax-row"><span>Bénéfice avant charges</span><strong id="taxBeforeCharges">0,00 $</strong></div>
+          <div class="tax-row"><span>Charges globales</span><strong id="taxExpenses">0,00 $</strong></div>
+          <div class="tax-row"><span>Bénéfice avant impôts</span><strong id="taxBeforeTax">0,00 $</strong></div>
+          <div class="tax-row"><span>Impôts (<span id="taxRateLabel">10</span> %)</span><strong id="taxValue">0,00 $</strong></div>
+          <div class="tax-row"><span>Bénéfices nets</span><strong id="taxNet">0,00 $</strong></div>
+          <div class="tax-row final"><span>Paye patron (<span id="bossRateLabel">20</span> %)</span><strong id="taxBoss">0,00 $</strong></div><div id="copyStatus" class="status"></div>
+        </div></div>
+      </section>
+
+      <section class="page" id="historique">
+        <div class="panel"><div class="panel-head"><div><h3>Historique des clôtures</h3><p>Chaque semaine clôturée reste figée ici.</p></div></div><div class="panel-body" id="historyList"></div></div>
+      </section>
+
+      <section class="page" id="membres">
+        <div class="panel"><div class="panel-head"><div><h3>Inviter un membre</h3></div></div><div class="panel-body">
+          <div class="grid three"><div><label>Nom affiché</label><input id="inviteName"></div><div><label>Email</label><input id="inviteEmail" type="email"></div><div><label>Rôle</label><select id="inviteRole"><option value="employee">Employé</option><option value="viewer">Lecture seule</option><option value="admin">Patron / Admin</option></select></div></div>
+          <button class="btn green" style="margin-top:13px" onclick="inviteMember()">Envoyer l'invitation</button><div id="inviteStatus" class="status"></div>
+        </div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Membres</h3></div></div><div class="panel-body table-wrap" id="membersTable"></div></div>
+      </section>
+
+      <section class="page" id="parametres">
+        <div class="panel"><div class="panel-head"><div><h3>Paramètres fiscaux</h3></div></div><div class="panel-body">
+          <div class="grid two"><div><label>Taux d'impôt (%)</label><input id="taxRate" type="number" min="0" step="0.01"></div><div><label>Paye patron (%)</label><input id="bossRate" type="number" min="0" step="0.01"></div></div>
+          <button class="btn green" style="margin-top:13px" onclick="saveSettings()">Enregistrer</button><div id="settingsStatus" class="status"></div>
+          <p class="small">La période comptable est fixée sur vendredi → jeudi pour correspondre à ton exemple fiscal.</p>
+        </div></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="./config.js"></script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const CONFIG=window.MCF_CONFIG||{};
+const configured=CONFIG.supabaseUrl&&CONFIG.supabaseAnonKey&&!CONFIG.supabaseUrl.includes('TON-PROJET')&&!CONFIG.supabaseAnonKey.includes('TA-CLE');
+if(!configured)document.getElementById('configWarning').classList.remove('hidden');
+const sb=configured?createClient(CONFIG.supabaseUrl,CONFIG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true}}):null;
+let session=null,profile=null,settings={tax_rate:10,boss_rate:20},period=null,orders=[],shop=[],expenses=[],profiles=[],history=[];
+const $=id=>document.getElementById(id); const isAdmin=()=>profile?.role==='admin'; const canWrite=()=>['admin','employee'].includes(profile?.role);
+function money(n){return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0)+' $'}
+function isoToday(){return new Date().toISOString().slice(0,10)}
+function fmtDate(iso){if(!iso)return'—';return new Intl.DateTimeFormat('fr-FR',{day:'numeric',month:'long',year:'numeric'}).format(new Date(iso+'T12:00:00'))}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function roleLabel(r){return({admin:'Patron / Admin',employee:'Employé',viewer:'Lecture seule'})[r]||r}
+function profileName(id){return profiles.find(p=>p.id===id)?.display_name||'Membre'}
+function inCurrentPeriod(date){return period&&date>=period.period_start&&date<=period.period_end}
+function periodText(p=period){return p?`Du ${fmtDate(p.period_start)} au ${fmtDate(p.period_end)}`:'—'}
+function calc(){
+ const o=orders.reduce((a,b)=>a+Number(b.amount||0),0),s=shop.reduce((a,b)=>a+Number(b.amount||0),0),e=expenses.reduce((a,b)=>a+Number(b.amount||0),0);
+ const beforeCharges=o+s,beforeTax=beforeCharges-e,tax=Math.max(0,beforeTax*(Number(settings.tax_rate)/100)),net=beforeTax-tax,boss=Math.max(0,net*(Number(settings.boss_rate)/100));
+ return{o,s,e,beforeCharges,beforeTax,tax,net,boss}
+}
+function nav(page){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+ $(page).classList.add('active');document.querySelector(`.nav button[data-page="${page}"]`)?.classList.add('active');
+ $('pageTitle').textContent=({dashboard:'Tableau de bord',commandes:'Commandes',echoppe:'Échoppe',charges:'Charges',taxes:'Taxes',historique:'Historique',membres:'Membres',parametres:'Paramètres'})[page]||page;render();
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.page)));
+
+async function loadAll(){
+ const [p,o,s,e,st,per,h]=await Promise.all([
+  sb.from('profiles').select('id,email,display_name,role,created_at').order('created_at'),
+  sb.from('orders').select('*').eq('period_id',period?.id||'00000000-0000-0000-0000-000000000000').order('date',{ascending:false}).order('created_at',{ascending:false}),
+  sb.from('shop_sales').select('*').eq('period_id',period?.id||'00000000-0000-0000-0000-000000000000').order('date',{ascending:false}),
+  sb.from('expenses').select('*').eq('period_id',period?.id||'00000000-0000-0000-0000-000000000000').order('date',{ascending:false}),
+  sb.from('forge_settings').select('*').eq('id',1).maybeSingle(),
+  sb.from('accounting_periods').select('*').eq('status','open').maybeSingle(),
+  sb.from('accounting_periods').select('*').eq('status','closed').order('period_end',{ascending:false})
+ ]);
+ for(const r of[p,o,s,e,st,per,h])if(r.error)throw r.error;
+ profiles=p.data||[];orders=o.data||[];shop=s.data||[];expenses=e.data||[];if(st.data)settings=st.data;if(per.data)period=per.data;history=h.data||[];render();
+}
+async function bootstrap(){
+ if(!configured)return;
+ const {data:{session:cur}}=await sb.auth.getSession();if(cur)await enterApp(cur);
+}
+async function enterApp(s){
+ session=s;const {data,error}=await sb.from('profiles').select('*').eq('id',s.user.id).single();
+ if(error){$('loginError').textContent='Profil utilisateur introuvable.';await sb.auth.signOut();return}
+ profile=data;
+ const {data:per,error:perErr}=await sb.from('accounting_periods').select('*').eq('status','open').maybeSingle();
+ if(perErr)throw perErr; period=per;
+ $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');
+ $('currentName').textContent=profile.display_name||profile.email;$('currentEmail').textContent=profile.email;$('currentRole').textContent=roleLabel(profile.role);
+ $('membersNav').classList.toggle('hidden',!isAdmin());$('settingsNav').classList.toggle('hidden',!isAdmin());$('manualCloseBtn').classList.toggle('hidden',!isAdmin());
+ $('orderFormPanel').classList.toggle('hidden',!canWrite());$('shopFormPanel').classList.toggle('hidden',!canWrite());$('expenseFormPanel').classList.toggle('hidden',!canWrite());
+ await loadAll();
+}
+$('loginForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!configured){$('loginError').textContent='Configure config.js.';return}
+ const {data,error}=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});
+ if(error){$('loginError').textContent='Connexion refusée : '+error.message;return}await enterApp(data.session)
+});
+window.logout=async()=>{await sb.auth.signOut();location.reload()};
+
+async function addRow(table,statusId,row){
+ if(!canWrite()||!period)return;
+ if(!inCurrentPeriod(row.date)){ $(statusId).textContent=`La date doit être comprise dans la période ouverte : ${periodText()}.`;return}
+ row.period_id=period.id;row.created_by=session.user.id;
+ const {error}=await sb.from(table).insert(row);if(error){$(statusId).textContent=error.message;return}
+ $(statusId).textContent='Ajout enregistré.';await loadAll()
+}
+window.addOrder=async()=>{const row={date:$('orderDate').value,client:$('orderClient').value.trim(),detail:$('orderDetail').value.trim(),amount:Number($('orderAmount').value)};if(!row.date||!Number.isFinite(row.amount)||row.amount<0)return $('orderStatus').textContent='Date ou montant invalide.';await addRow('orders','orderStatus',row);$('orderClient').value='';$('orderDetail').value='';$('orderAmount').value=''}
+window.addShop=async()=>{const row={date:$('shopDate').value,detail:$('shopDetail').value.trim(),amount:Number($('shopAmount').value)};if(!row.date||!Number.isFinite(row.amount)||row.amount<0)return $('shopStatus').textContent='Date ou montant invalide.';await addRow('shop_sales','shopStatus',row);$('shopDetail').value='';$('shopAmount').value=''}
+window.addExpense=async()=>{const row={date:$('expenseDate').value,detail:$('expenseDetail').value.trim(),amount:Number($('expenseAmount').value)};if(!row.date||!Number.isFinite(row.amount)||row.amount<0)return $('expenseStatus').textContent='Date ou montant invalide.';await addRow('expenses','expenseStatus',row);$('expenseDetail').value='';$('expenseAmount').value=''}
+window.deleteRow=async(table,id)=>{const {error}=await sb.from(table).delete().eq('id',id);if(error)return alert(error.message);await loadAll()}
+
+function actionCell(table,row){const ok=isAdmin()||(profile?.role==='employee'&&row.created_by===session.user.id);return ok?`<button class="btn red" onclick="deleteRow('${table}','${row.id}')">Supprimer</button>`:'—'}
+function ordersHTML(rows){if(!rows.length)return'<div class="empty">Aucune commande.</div>';return`<table><thead><tr><th>Date</th><th>Client</th><th>Détail</th><th>Ajouté par</th><th class="money">Montant</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${esc(r.client||'—')}</td><td>${esc(r.detail||'—')}</td><td>${esc(profileName(r.created_by))}</td><td class="money"><strong>${money(r.amount)}</strong></td><td>${actionCell('orders',r)}</td></tr>`).join('')}</tbody></table>`}
+function simpleHTML(rows,table){if(!rows.length)return'<div class="empty">Aucune entrée.</div>';return`<table><thead><tr><th>Date</th><th>Description</th><th>Ajouté par</th><th class="money">Montant</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${esc(r.detail||'—')}</td><td>${esc(profileName(r.created_by))}</td><td class="money"><strong>${money(r.amount)}</strong></td><td>${actionCell(table,r)}</td></tr>`).join('')}</tbody></table>`}
+
+window.saveSettings=async()=>{
+ if(!isAdmin())return;const payload={id:1,tax_rate:Number($('taxRate').value),boss_rate:Number($('bossRate').value),updated_by:session.user.id};
+ const {error}=await sb.from('forge_settings').upsert(payload);$('settingsStatus').textContent=error?error.message:'Paramètres enregistrés.';if(!error)await loadAll()
+}
+window.inviteMember=async()=>{
+ if(!isAdmin())return;const token=(await sb.auth.getSession()).data.session?.access_token;
+ const res=await fetch('/api/invite-user',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({email:$('inviteEmail').value.trim(),display_name:$('inviteName').value.trim(),role:$('inviteRole').value})});
+ const body=await res.json().catch(()=>({}));$('inviteStatus').textContent=res.ok?'Invitation envoyée.':(body.error||'Invitation impossible.');if(res.ok)await loadAll()
+}
+window.changeRole=async(id,role)=>{if(!isAdmin())return;const{error}=await sb.from('profiles').update({role}).eq('id',id);if(error)return alert(error.message);await loadAll()}
+
+window.closeWeek=async()=>{
+ if(!isAdmin()||!period)return;
+ const today=isoToday();
+ if(today<period.period_end){
+   alert(`La période se termine le ${fmtDate(period.period_end)}. La clôture manuelle n'est disponible qu'à partir de ce jour.`);
+   return;
+ }
+ if(!confirm(`Clôturer définitivement la période ${periodText()} ? Les chiffres seront figés dans l'historique.`))return;
+ const token=(await sb.auth.getSession()).data.session?.access_token;
+ const res=await fetch('/api/close-week',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({manual:true})});
+ const body=await res.json().catch(()=>({}));
+ if(!res.ok){alert(body.error||'Clôture impossible.');return}
+ period=null;
+ const {data:newPeriod}=await sb.from('accounting_periods').select('*').eq('status','open').single();period=newPeriod;await loadAll();nav('historique');
+}
+
+function historyHTML(){
+ if(!history.length)return'<div class="empty">Aucune semaine clôturée pour le moment.</div>';
+ return history.map(h=>`<div class="history-card">
+   <div class="actions" style="justify-content:space-between">
+     <div><strong>${fmtDate(h.period_start)} → ${fmtDate(h.period_end)}</strong><div class="small">Clôturée le ${new Intl.DateTimeFormat('fr-FR',{dateStyle:'medium',timeStyle:'short',timeZone:'Europe/Paris'}).format(new Date(h.closed_at))}</div></div>
+     <button class="btn gold" onclick="copyHistory('${h.id}')">Copier</button>
+   </div>
+   <div class="history-grid">
+     <div><small>Commandes</small><b>${money(h.snapshot_orders)}</b></div>
+     <div><small>Échoppe</small><b>${money(h.snapshot_shop)}</b></div>
+     <div><small>Charges</small><b>${money(h.snapshot_expenses)}</b></div>
+     <div><small>Impôts</small><b>${money(h.snapshot_tax)}</b></div>
+     <div><small>Bénéfice avant impôts</small><b>${money(h.snapshot_before_tax)}</b></div>
+     <div><small>Bénéfices nets</small><b>${money(h.snapshot_net)}</b></div>
+     <div><small>Paye patron</small><b>${money(h.snapshot_boss)}</b></div>
+     <div><small>Taux</small><b>${Number(h.tax_rate)} % / ${Number(h.boss_rate)} %</b></div>
+   </div>
+ </div>`).join('')
+}
+window.copyHistory=async id=>{
+ const h=history.find(x=>x.id===id);if(!h)return;
+ const txt=`Forge de McFarlane's — Récapitulatif fiscal
+Semaine du ${fmtDate(h.period_start)} au ${fmtDate(h.period_end)}.
+
+Commandes : ${money(h.snapshot_orders)}
+Chiffre d'affaires échoppe : ${money(h.snapshot_shop)}
+Bénéfice avant charges : ${money(h.snapshot_before_charges)}
+Charges globales (coûts de production) : ${money(h.snapshot_expenses)}
+Bénéfice avant impôts : ${money(h.snapshot_before_tax)}
+Impôts (${h.tax_rate} %) : ${money(h.snapshot_tax)}
+Bénéfices nets : ${money(h.snapshot_net)}
+Paye patron (${h.boss_rate} % des bénéfices nets) : ${money(h.snapshot_boss)}`;
+ try{await navigator.clipboard.writeText(txt)}catch{prompt('Copie le texte :',txt)}
+}
+window.copyTax=async()=>{
+ const d=calc();const txt=`Forge de McFarlane's — Récapitulatif fiscal
+Semaine du ${fmtDate(period.period_start)} au ${fmtDate(period.period_end)}.
+
+Commandes : ${money(d.o)}
+Chiffre d'affaires échoppe : ${money(d.s)}
+Bénéfice avant charges : ${money(d.beforeCharges)}
+Charges globales (coûts de production) : ${money(d.e)}
+Bénéfice avant impôts : ${money(d.beforeTax)}
+Impôts (${settings.tax_rate} %) : ${money(d.tax)}
+Bénéfices nets : ${money(d.net)}
+Paye patron (${settings.boss_rate} % des bénéfices nets) : ${money(d.boss)}`;
+ try{await navigator.clipboard.writeText(txt);$('copyStatus').textContent='Récapitulatif copié.'}catch{prompt('Copie le texte :',txt)}
+}
+
+function membersHTML(){if(!profiles.length)return'<div class="empty">Aucun membre.</div>';return`<table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th></tr></thead><tbody>${profiles.map(p=>`<tr><td>${esc(p.display_name||'—')}</td><td>${esc(p.email||'—')}</td><td>${p.id===session.user.id?esc(roleLabel(p.role)):`<select onchange="changeRole('${p.id}',this.value)"><option value="employee" ${p.role==='employee'?'selected':''}>Employé</option><option value="viewer" ${p.role==='viewer'?'selected':''}>Lecture seule</option><option value="admin" ${p.role==='admin'?'selected':''}>Patron / Admin</option></select>`}</td></tr>`).join('')}</tbody></table>`}
+
+function render(){
+ if(!profile||!period)return;
+ const d=calc();$('currentPeriodLabel').textContent=periodText();$('weekDash').textContent=periodText();$('weekTax').textContent=periodText();
+ $('dashOrders').textContent=money(d.o);$('dashShop').textContent=money(d.s);$('dashExpenses').textContent=money(d.e);$('dashNet').textContent=money(d.net);
+ $('latestOrders').innerHTML=ordersHTML(orders.slice(0,5));$('ordersTable').innerHTML=ordersHTML(orders);$('shopTable').innerHTML=simpleHTML(shop,'shop_sales');$('expensesTable').innerHTML=simpleHTML(expenses,'expenses');
+ $('taxOrders').textContent=money(d.o);$('taxShop').textContent=money(d.s);$('taxBeforeCharges').textContent=money(d.beforeCharges);$('taxExpenses').textContent=money(d.e);$('taxBeforeTax').textContent=money(d.beforeTax);$('taxValue').textContent=money(d.tax);$('taxNet').textContent=money(d.net);$('taxBoss').textContent=money(d.boss);
+ $('taxRateLabel').textContent=settings.tax_rate;$('bossRateLabel').textContent=settings.boss_rate;$('taxRate').value=settings.tax_rate;$('bossRate').value=settings.boss_rate;$('historyList').innerHTML=historyHTML();if(isAdmin())$('membersTable').innerHTML=membersHTML()
+}
+['orderDate','shopDate','expenseDate'].forEach(id=>$(id).value=isoToday());
+if(sb)sb.auth.onAuthStateChange(async(event)=>{if(event==='SIGNED_OUT')location.reload()});
+bootstrap();
+</script>
+</body>
+</html>

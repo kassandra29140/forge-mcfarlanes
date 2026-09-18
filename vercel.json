@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/close-week",
+      "schedule": "0 22 * * 4"
+    },
+    {
+      "path": "/api/close-week",
+      "schedule": "0 23 * * 4"
+    }
+  ]
+}
