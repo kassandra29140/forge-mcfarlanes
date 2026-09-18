@@ -71,7 +71,7 @@ table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px
 <div id="app" class="app hidden">
   <aside class="sidebar">
     <div class="brand"><h1>McFARLANE'S</h1><p>Forge • Livre de comptes</p></div>
-    <div class="userbox"><strong id="currentName">—</strong><span id="currentEmail">—</span><br><span class="role-badge" id="currentRole">—</span></div>
+    <div class="userbox"><strong id="currentName">—</strong><span class="role-badge" id="currentRole">—</span></div>
     <div class="nav">
       <button class="active" data-page="dashboard">⚒ Tableau de bord</button>
       <button data-page="profil">👤 Mon profil</button>
@@ -120,8 +120,8 @@ table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px
                 <input id="profileNameInput" maxlength="40" placeholder="Ex. Arthur Morgan">
               </div>
               <div>
-                <label>Email du compte</label>
-                <input id="profileEmailInput" disabled>
+                <label>Rôle</label>
+                <input id="profileRoleInput" disabled>
               </div>
             </div>
             <div class="actions" style="margin-top:13px">
@@ -254,7 +254,7 @@ document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',(
 
 async function loadAll(){
  const [p,o,s,e,st,per,h]=await Promise.all([
-  sb.from('profiles').select('id,email,display_name,role,created_at').order('created_at'),
+  sb.from('profiles').select('id,display_name,role,created_at').order('created_at'),
   sb.from('orders').select('*').eq('period_id',period?.id||'00000000-0000-0000-0000-000000000000').order('date',{ascending:false}).order('created_at',{ascending:false}),
   sb.from('shop_sales').select('*').eq('period_id',period?.id||'00000000-0000-0000-0000-000000000000').order('date',{ascending:false}),
   sb.from('expenses').select('*').eq('period_id',period?.id||'00000000-0000-0000-0000-000000000000').order('date',{ascending:false}),
@@ -270,14 +270,14 @@ async function bootstrap(){
  const {data:{session:cur}}=await sb.auth.getSession();if(cur)await enterApp(cur);
 }
 async function enterApp(s){
- session=s;const {data,error}=await sb.from('profiles').select('*').eq('id',s.user.id).single();
+ session=s;const {data,error}=await sb.from('profiles').select('id,display_name,role,created_at').eq('id',s.user.id).single();
  if(error){$('loginError').textContent='Profil utilisateur introuvable.';await sb.auth.signOut();return}
  profile=data;
  const {data:per,error:perErr}=await sb.from('accounting_periods').select('*').eq('status','open').maybeSingle();
  if(perErr)throw perErr; period=per;
  $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');
- $('currentName').textContent=profile.display_name||profile.email;$('currentEmail').textContent=profile.email;$('currentRole').textContent=roleLabel(profile.role);
- $('profileNameInput').value=profile.display_name||'';$('profileEmailInput').value=profile.email||'';
+ $('currentName').textContent=profile.display_name||'Membre';$('currentRole').textContent=roleLabel(profile.role);
+ $('profileNameInput').value=profile.display_name||'';$('profileRoleInput').value=roleLabel(profile.role);
  $('membersNav').classList.toggle('hidden',!isAdmin());$('settingsNav').classList.toggle('hidden',!isAdmin());$('manualCloseBtn').classList.toggle('hidden',!isAdmin());
  $('orderFormPanel').classList.toggle('hidden',!canWrite());$('shopFormPanel').classList.toggle('hidden',!canWrite());$('expenseFormPanel').classList.toggle('hidden',!canWrite());
  await loadAll();
@@ -548,7 +548,25 @@ Paye patron (${settings.boss_rate} % des bénéfices nets) : ${money(d.boss)}`;
  try{await navigator.clipboard.writeText(txt);$('copyStatus').textContent='Récapitulatif copié.'}catch{prompt('Copie le texte :',txt)}
 }
 
-function membersHTML(){if(!profiles.length)return'<div class="empty">Aucun membre.</div>';return`<table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th></tr></thead><tbody>${profiles.map(p=>`<tr><td>${esc(p.display_name||'—')}</td><td>${esc(p.email||'—')}</td><td>${p.id===session.user.id?esc(roleLabel(p.role)):`<select onchange="changeRole('${p.id}',this.value)"><option value="employee" ${p.role==='employee'?'selected':''}>Employé</option><option value="viewer" ${p.role==='viewer'?'selected':''}>Lecture seule</option><option value="admin" ${p.role==='admin'?'selected':''}>Patron / Admin</option></select>`}</td></tr>`).join('')}</tbody></table>`}
+function membersHTML(){
+ if(!profiles.length)return'<div class="empty">Aucun membre.</div>';
+ return `<table>
+   <thead><tr><th>Nom</th><th>Rôle</th></tr></thead>
+   <tbody>${profiles.map(p=>`
+     <tr>
+       <td>${esc(p.display_name||'—')}</td>
+       <td>${p.id===session.user.id
+         ? esc(roleLabel(p.role))
+         : `<select onchange="changeRole('${p.id}',this.value)">
+              <option value="employee" ${p.role==='employee'?'selected':''}>Employé</option>
+              <option value="viewer" ${p.role==='viewer'?'selected':''}>Lecture seule</option>
+              <option value="admin" ${p.role==='admin'?'selected':''}>Patron / Admin</option>
+            </select>`}
+       </td>
+     </tr>`).join('')}
+   </tbody>
+ </table>`;
+}
 
 function render(){
  if(!profile||!period)return;
