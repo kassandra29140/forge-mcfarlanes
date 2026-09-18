@@ -131,12 +131,42 @@ table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px
             <p class="small">Le nom doit contenir entre 2 et 40 caractères. Ton email et ton rôle restent inchangés.</p>
           </div>
         </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Changer mon mot de passe</h3>
+              <p>Choisis un nouveau mot de passe pour ton compte.</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="grid two">
+              <div>
+                <label>Nouveau mot de passe</label>
+                <input id="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="8 caractères minimum">
+              </div>
+              <div>
+                <label>Confirmer le nouveau mot de passe</label>
+                <input id="confirmPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Retape le mot de passe">
+              </div>
+            </div>
+            <div class="actions" style="margin-top:13px">
+              <button class="btn blue" onclick="changePassword()">Changer mon mot de passe</button>
+            </div>
+            <div id="passwordStatus" class="status"></div>
+          </div>
+        </div>
       </section>
 
       <section class="page" id="commandes">
-        <div class="panel" id="orderFormPanel"><div class="panel-head"><div><h3>Nouvelle commande</h3></div></div><div class="panel-body">
+        <div class="panel" id="orderFormPanel"><div class="panel-head"><div><h3 id="orderFormTitle">Nouvelle commande</h3></div></div><div class="panel-body">
           <div class="grid three"><div><label>Date</label><input id="orderDate" type="date"></div><div><label>Client / référence</label><input id="orderClient"></div><div><label>Montant ($)</label><input id="orderAmount" type="number" min="0" step="0.01"></div></div>
-          <div class="field" style="margin-top:13px"><label>Détail</label><input id="orderDetail"></div><button class="btn gold" onclick="addOrder()">+ Ajouter la commande</button><div id="orderStatus" class="status"></div>
+          <div class="field" style="margin-top:13px"><label>Détail</label><input id="orderDetail"></div>
+          <div class="actions">
+            <button id="orderSaveBtn" class="btn gold" onclick="addOrder()">+ Ajouter la commande</button>
+            <button id="orderCancelBtn" class="btn red hidden" onclick="cancelOrderEdit()">Annuler la modification</button>
+          </div>
+          <div id="orderStatus" class="status"></div>
         </div></div>
         <div class="panel"><div class="panel-head"><div><h3>Registre des commandes</h3></div></div><div class="panel-body table-wrap" id="ordersTable"></div></div>
       </section>
@@ -200,7 +230,7 @@ const CONFIG=window.MCF_CONFIG||{};
 const configured=CONFIG.supabaseUrl&&CONFIG.supabaseAnonKey&&!CONFIG.supabaseUrl.includes('TON-PROJET')&&!CONFIG.supabaseAnonKey.includes('TA-CLE');
 if(!configured)document.getElementById('configWarning').classList.remove('hidden');
 const sb=configured?createClient(CONFIG.supabaseUrl,CONFIG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true}}):null;
-let session=null,profile=null,settings={tax_rate:10,boss_rate:20},period=null,orders=[],shop=[],expenses=[],profiles=[],history=[];
+let session=null,profile=null,settings={tax_rate:10,boss_rate:20},period=null,orders=[],shop=[],expenses=[],profiles=[],history=[],editOrderId=null;
 const $=id=>document.getElementById(id); const isAdmin=()=>profile?.role==='admin'; const canWrite=()=>['admin','employee'].includes(profile?.role);
 function money(n){return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0)+' $'}
 function isoToday(){return new Date().toISOString().slice(0,10)}
@@ -266,13 +296,123 @@ async function addRow(table,statusId,row){
  const {error}=await sb.from(table).insert(row);if(error){$(statusId).textContent=error.message;return}
  $(statusId).textContent='Ajout enregistré.';await loadAll()
 }
-window.addOrder=async()=>{const row={date:$('orderDate').value,client:$('orderClient').value.trim(),detail:$('orderDetail').value.trim(),amount:Number($('orderAmount').value)};if(!row.date||!Number.isFinite(row.amount)||row.amount<0)return $('orderStatus').textContent='Date ou montant invalide.';await addRow('orders','orderStatus',row);$('orderClient').value='';$('orderDetail').value='';$('orderAmount').value=''}
+window.addOrder=async()=>{
+ const row={
+   date:$('orderDate').value,
+   client:$('orderClient').value.trim(),
+   detail:$('orderDetail').value.trim(),
+   amount:Number($('orderAmount').value)
+ };
+
+ if(!row.date || !Number.isFinite(row.amount) || row.amount<0){
+   $('orderStatus').textContent='Date ou montant invalide.';
+   return;
+ }
+
+ if(!inCurrentPeriod(row.date)){
+   $('orderStatus').textContent=`La date doit être comprise dans la période ouverte : ${periodText()}.`;
+   return;
+ }
+
+ if(editOrderId){
+   const target=orders.find(o=>o.id===editOrderId);
+   const allowed=isAdmin() || (profile?.role==='employee' && target?.created_by===session.user.id);
+
+   if(!allowed){
+     $('orderStatus').textContent="Tu n'as pas le droit de modifier cette commande.";
+     return;
+   }
+
+   const {error}=await sb
+     .from('orders')
+     .update(row)
+     .eq('id',editOrderId);
+
+   if(error){
+     $('orderStatus').textContent=error.message;
+     return;
+   }
+
+   $('orderStatus').textContent='Commande modifiée.';
+   cancelOrderEdit(false);
+   await loadAll();
+   return;
+ }
+
+ await addRow('orders','orderStatus',row);
+ $('orderClient').value='';
+ $('orderDetail').value='';
+ $('orderAmount').value='';
+}
 window.addShop=async()=>{const row={date:$('shopDate').value,detail:$('shopDetail').value.trim(),amount:Number($('shopAmount').value)};if(!row.date||!Number.isFinite(row.amount)||row.amount<0)return $('shopStatus').textContent='Date ou montant invalide.';await addRow('shop_sales','shopStatus',row);$('shopDetail').value='';$('shopAmount').value=''}
 window.addExpense=async()=>{const row={date:$('expenseDate').value,detail:$('expenseDetail').value.trim(),amount:Number($('expenseAmount').value)};if(!row.date||!Number.isFinite(row.amount)||row.amount<0)return $('expenseStatus').textContent='Date ou montant invalide.';await addRow('expenses','expenseStatus',row);$('expenseDetail').value='';$('expenseAmount').value=''}
 window.deleteRow=async(table,id)=>{const {error}=await sb.from(table).delete().eq('id',id);if(error)return alert(error.message);await loadAll()}
 
-function actionCell(table,row){const ok=isAdmin()||(profile?.role==='employee'&&row.created_by===session.user.id);return ok?`<button class="btn red" onclick="deleteRow('${table}','${row.id}')">Supprimer</button>`:'—'}
-function ordersHTML(rows){if(!rows.length)return'<div class="empty">Aucune commande.</div>';return`<table><thead><tr><th>Date</th><th>Client</th><th>Détail</th><th>Ajouté par</th><th class="money">Montant</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${esc(r.client||'—')}</td><td>${esc(r.detail||'—')}</td><td>${esc(profileName(r.created_by))}</td><td class="money"><strong>${money(r.amount)}</strong></td><td>${actionCell('orders',r)}</td></tr>`).join('')}</tbody></table>`}
+function canEditRow(row){
+ return isAdmin() || (profile?.role==='employee' && row.created_by===session.user.id);
+}
+
+function actionCell(table,row){
+ const ok=canEditRow(row);
+ if(!ok)return '—';
+
+ if(table==='orders'){
+   return `<div class="actions">
+     <button class="btn blue" onclick="editOrder('${row.id}')">Modifier</button>
+     <button class="btn red" onclick="deleteRow('${table}','${row.id}')">Supprimer</button>
+   </div>`;
+ }
+
+ return `<button class="btn red" onclick="deleteRow('${table}','${row.id}')">Supprimer</button>`;
+}
+
+window.editOrder=(id)=>{
+ const row=orders.find(o=>o.id===id);
+ if(!row || !canEditRow(row))return;
+
+ editOrderId=id;
+ $('orderDate').value=row.date;
+ $('orderClient').value=row.client||'';
+ $('orderDetail').value=row.detail||'';
+ $('orderAmount').value=row.amount;
+
+ $('orderFormTitle').textContent='Modifier la commande';
+ $('orderSaveBtn').textContent='Enregistrer la modification';
+ $('orderCancelBtn').classList.remove('hidden');
+ $('orderStatus').textContent='Modification en cours.';
+
+ nav('commandes');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+window.cancelOrderEdit=(clearStatus=true)=>{
+ editOrderId=null;
+ $('orderDate').value=isoToday();
+ $('orderClient').value='';
+ $('orderDetail').value='';
+ $('orderAmount').value='';
+ $('orderFormTitle').textContent='Nouvelle commande';
+ $('orderSaveBtn').textContent='+ Ajouter la commande';
+ $('orderCancelBtn').classList.add('hidden');
+ if(clearStatus)$('orderStatus').textContent='';
+}
+
+function ordersHTML(rows){
+ if(!rows.length)return'<div class="empty">Aucune commande.</div>';
+ return `<table>
+   <thead><tr><th>Date</th><th>Client</th><th>Détail</th><th>Ajouté par</th><th class="money">Montant</th><th>Action</th></tr></thead>
+   <tbody>${rows.map(r=>`
+     <tr>
+       <td>${fmtDate(r.date)}</td>
+       <td>${esc(r.client||'—')}</td>
+       <td>${esc(r.detail||'—')}</td>
+       <td>${esc(profileName(r.created_by))}</td>
+       <td class="money"><strong>${money(r.amount)}</strong></td>
+       <td>${actionCell('orders',r)}</td>
+     </tr>`).join('')}
+   </tbody>
+ </table>`;
+}
 function simpleHTML(rows,table){if(!rows.length)return'<div class="empty">Aucune entrée.</div>';return`<table><thead><tr><th>Date</th><th>Description</th><th>Ajouté par</th><th class="money">Montant</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${esc(r.detail||'—')}</td><td>${esc(profileName(r.created_by))}</td><td class="money"><strong>${money(r.amount)}</strong></td><td>${actionCell(table,r)}</td></tr>`).join('')}</tbody></table>`}
 
 
@@ -302,6 +442,34 @@ window.saveDisplayName=async()=>{
 
   $('profileStatus').textContent='Nom enregistré.';
   render();
+}
+
+
+window.changePassword=async()=>{
+ const password=$('newPassword').value;
+ const confirmPassword=$('confirmPassword').value;
+ $('passwordStatus').textContent='';
+
+ if(password.length<8){
+   $('passwordStatus').textContent='Le mot de passe doit contenir au moins 8 caractères.';
+   return;
+ }
+
+ if(password!==confirmPassword){
+   $('passwordStatus').textContent='Les deux mots de passe ne correspondent pas.';
+   return;
+ }
+
+ const {error}=await sb.auth.updateUser({password});
+
+ if(error){
+   $('passwordStatus').textContent='Erreur : '+error.message;
+   return;
+ }
+
+ $('newPassword').value='';
+ $('confirmPassword').value='';
+ $('passwordStatus').textContent='Mot de passe modifié avec succès.';
 }
 
 window.saveSettings=async()=>{
