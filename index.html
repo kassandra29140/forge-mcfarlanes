@@ -74,6 +74,7 @@ table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px
     <div class="userbox"><strong id="currentName">—</strong><span id="currentEmail">—</span><br><span class="role-badge" id="currentRole">—</span></div>
     <div class="nav">
       <button class="active" data-page="dashboard">⚒ Tableau de bord</button>
+      <button data-page="profil">👤 Mon profil</button>
       <button data-page="commandes">📜 Commandes</button>
       <button data-page="echoppe">🧾 Échoppe</button>
       <button data-page="charges">⛏ Charges</button>
@@ -102,6 +103,34 @@ table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px
         </div>
         <div class="panel"><div class="panel-head"><div><h3>État du registre</h3><p id="weekDash"></p></div></div><div class="panel-body"><div class="note">La semaine comptable va du vendredi au jeudi. À la clôture, les chiffres sont figés et archivés.</div></div></div>
         <div class="panel"><div class="panel-head"><div><h3>Dernières commandes</h3></div></div><div class="panel-body table-wrap" id="latestOrders"></div></div>
+      </section>
+
+      <section class="page" id="profil">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Mon profil</h3>
+              <p>Change ton nom affiché dans le registre de la forge.</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="grid two">
+              <div>
+                <label>Nom d'utilisateur / nom RP</label>
+                <input id="profileNameInput" maxlength="40" placeholder="Ex. Arthur Morgan">
+              </div>
+              <div>
+                <label>Email du compte</label>
+                <input id="profileEmailInput" disabled>
+              </div>
+            </div>
+            <div class="actions" style="margin-top:13px">
+              <button class="btn green" onclick="saveDisplayName()">Enregistrer mon nom</button>
+            </div>
+            <div id="profileStatus" class="status"></div>
+            <p class="small">Le nom doit contenir entre 2 et 40 caractères. Ton email et ton rôle restent inchangés.</p>
+          </div>
+        </div>
       </section>
 
       <section class="page" id="commandes">
@@ -189,7 +218,7 @@ function calc(){
 function nav(page){
  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
  $(page).classList.add('active');document.querySelector(`.nav button[data-page="${page}"]`)?.classList.add('active');
- $('pageTitle').textContent=({dashboard:'Tableau de bord',commandes:'Commandes',echoppe:'Échoppe',charges:'Charges',taxes:'Taxes',historique:'Historique',membres:'Membres',parametres:'Paramètres'})[page]||page;render();
+ $('pageTitle').textContent=({dashboard:'Tableau de bord',profil:'Mon profil',commandes:'Commandes',echoppe:'Échoppe',charges:'Charges',taxes:'Taxes',historique:'Historique',membres:'Membres',parametres:'Paramètres'})[page]||page;render();
 }
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.page)));
 
@@ -218,6 +247,7 @@ async function enterApp(s){
  if(perErr)throw perErr; period=per;
  $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');
  $('currentName').textContent=profile.display_name||profile.email;$('currentEmail').textContent=profile.email;$('currentRole').textContent=roleLabel(profile.role);
+ $('profileNameInput').value=profile.display_name||'';$('profileEmailInput').value=profile.email||'';
  $('membersNav').classList.toggle('hidden',!isAdmin());$('settingsNav').classList.toggle('hidden',!isAdmin());$('manualCloseBtn').classList.toggle('hidden',!isAdmin());
  $('orderFormPanel').classList.toggle('hidden',!canWrite());$('shopFormPanel').classList.toggle('hidden',!canWrite());$('expenseFormPanel').classList.toggle('hidden',!canWrite());
  await loadAll();
@@ -244,6 +274,35 @@ window.deleteRow=async(table,id)=>{const {error}=await sb.from(table).delete().e
 function actionCell(table,row){const ok=isAdmin()||(profile?.role==='employee'&&row.created_by===session.user.id);return ok?`<button class="btn red" onclick="deleteRow('${table}','${row.id}')">Supprimer</button>`:'—'}
 function ordersHTML(rows){if(!rows.length)return'<div class="empty">Aucune commande.</div>';return`<table><thead><tr><th>Date</th><th>Client</th><th>Détail</th><th>Ajouté par</th><th class="money">Montant</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${esc(r.client||'—')}</td><td>${esc(r.detail||'—')}</td><td>${esc(profileName(r.created_by))}</td><td class="money"><strong>${money(r.amount)}</strong></td><td>${actionCell('orders',r)}</td></tr>`).join('')}</tbody></table>`}
 function simpleHTML(rows,table){if(!rows.length)return'<div class="empty">Aucune entrée.</div>';return`<table><thead><tr><th>Date</th><th>Description</th><th>Ajouté par</th><th class="money">Montant</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${esc(r.detail||'—')}</td><td>${esc(profileName(r.created_by))}</td><td class="money"><strong>${money(r.amount)}</strong></td><td>${actionCell(table,r)}</td></tr>`).join('')}</tbody></table>`}
+
+
+window.saveDisplayName=async()=>{
+  const name=$('profileNameInput').value.trim();
+  $('profileStatus').textContent='';
+
+  if(name.length<2 || name.length>40){
+    $('profileStatus').textContent='Le nom doit contenir entre 2 et 40 caractères.';
+    return;
+  }
+
+  const {data,error}=await sb.rpc('update_my_display_name',{
+    p_display_name:name
+  });
+
+  if(error){
+    $('profileStatus').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  profile.display_name=data;
+  $('currentName').textContent=data;
+
+  const me=profiles.find(p=>p.id===session.user.id);
+  if(me) me.display_name=data;
+
+  $('profileStatus').textContent='Nom enregistré.';
+  render();
+}
 
 window.saveSettings=async()=>{
  if(!isAdmin())return;const payload={id:1,tax_rate:Number($('taxRate').value),boss_rate:Number($('bossRate').value),updated_by:session.user.id};
