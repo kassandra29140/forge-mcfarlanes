@@ -8,54 +8,161 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
+
 :root{
-  --coal:#070504;--coal2:#100b08;--iron:#302c28;--iron2:#463e37;
-  --ember:#d85817;--ember2:#ff922c;--gold:#f0bd78;
-  --text:#eadbc3;--muted:#baa58b;--line:#875024;
-  --green:#2f7b50;--red:#96372d;--blue:#3c6686;--shadow:0 16px 40px rgba(0,0,0,.42)
+  --coal:#090705;
+  --coal2:#120e0b;
+  --iron:#24211e;
+  --iron2:#3a342f;
+  --wood:#2b190f;
+  --wood2:#4a2a16;
+  --ember:#c9551a;
+  --ember2:#ff9b38;
+  --gold:#d6a15f;
+  --gold2:#f2c781;
+  --parchment:#d9bc8a;
+  --parchment2:#b99564;
+  --text:#eadcc8;
+  --muted:#bba88e;
+  --line:#7d4a24;
+  --green:#3d7550;
+  --red:#8d3d32;
+  --blue:#42657d;
+  --shadow:0 18px 45px rgba(0,0,0,.48);
 }
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Special Elite",Georgia,serif}
-body{color:var(--text);background:radial-gradient(circle at 12% 4%,rgba(255,125,29,.16),transparent 14%),linear-gradient(180deg,#0b0705,#050302)}
-button,input,select{font:inherit}.hidden{display:none!important}
-.login-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 30%,rgba(220,90,20,.13),transparent 22%),linear-gradient(180deg,rgba(11,7,5,.96),rgba(4,3,2,1))}
-.login-card{width:min(460px,100%);padding:30px;border-radius:18px;border:1px solid #8f5428;background:linear-gradient(180deg,rgba(62,49,40,.98),rgba(28,21,17,.99));box-shadow:var(--shadow)}
-.login-card h1{font-family:"Rye",Georgia,serif;text-align:center;margin:8px 0 4px;color:#f1d0a2;font-size:2rem}
-.login-card .subtitle{text-align:center;color:#b98e62;margin-bottom:24px}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Special Elite",Georgia,serif}
+body{
+  color:var(--text);
+  background:
+    radial-gradient(circle at 15% 8%,rgba(255,120,30,.10),transparent 20%),
+    radial-gradient(circle at 82% 24%,rgba(140,65,20,.08),transparent 18%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#100b08 0%,#070504 55%,#040302 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:screen;
+  background-image:
+    radial-gradient(circle at 10% 20%,rgba(255,145,45,.15) 0 1px,transparent 2px),
+    radial-gradient(circle at 45% 70%,rgba(255,120,24,.09) 0 1px,transparent 2px),
+    radial-gradient(circle at 78% 35%,rgba(255,170,70,.10) 0 1px,transparent 2px);
+  background-size:190px 170px,260px 230px,330px 310px;
+}
+button,input,select{font:inherit}.hidden{display:none!important}.small{color:var(--muted);font-size:.9rem}
+
+/* CONNEXION */
+.login-screen{
+  min-height:100vh;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(5,3,2,.42),rgba(5,3,2,.94)),
+    url('./forge-banner.jpg') center/cover no-repeat,
+    linear-gradient(180deg,#21120b,#050302);
+}
+.login-screen:before{
+  content:"";position:absolute;inset:0;box-shadow:inset 0 0 160px #000,inset 0 0 35px rgba(0,0,0,.9);pointer-events:none
+}
+.login-card{
+  position:relative;z-index:1;width:min(500px,100%);padding:30px 32px 34px;border-radius:8px;
+  border:2px solid #815027;background:
+    linear-gradient(180deg,rgba(44,31,23,.98),rgba(17,12,9,.99));
+  box-shadow:0 28px 70px rgba(0,0,0,.72),inset 0 0 0 4px rgba(0,0,0,.26);
+}
+.login-card:before,.login-card:after,.panel:before,.panel:after,.stat:before,.stat:after,.brand:before,.brand:after{
+  content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#d8b071,#65401f 55%,#1c1009 70%);box-shadow:0 1px 2px #000
+}
+.login-card:before{left:10px;top:10px}.login-card:after{right:10px;top:10px}
+.login-crest{width:86px;height:86px;margin:0 auto 10px;display:grid;place-items:center;border-radius:50%;border:2px solid #8e5c30;background:radial-gradient(circle,#3c2a1d,#17100c);box-shadow:inset 0 0 20px #000,0 8px 22px rgba(0,0,0,.4)}
+.login-crest svg{width:58px;height:58px;color:#e6b66f}
+.login-card h1{font-family:"Rye",Georgia,serif;text-align:center;margin:8px 0 4px;color:#f1d0a2;font-size:2rem;text-shadow:0 3px 0 #241108,0 0 20px rgba(255,142,45,.15)}
+.login-card .subtitle{text-align:center;color:#c49b6b;margin-bottom:24px;letter-spacing:.06em}
 .field{margin-bottom:14px}label{display:block;margin-bottom:7px;color:#efd7b6;font-weight:700}
-input,select{width:100%;padding:12px 13px;border-radius:9px;outline:none;border:1px solid #8f5326;color:#faead2;background:linear-gradient(180deg,#2d211a,#1c1511)}
-input:focus,select:focus{border-color:#e18134;box-shadow:0 0 0 3px rgba(226,119,40,.16)}
-.error{min-height:1.2em;color:#ff9e91;margin-top:10px}.info,.status{min-height:1.2em;color:#88d8a7;margin-top:10px}
+input,select{width:100%;padding:12px 13px;border-radius:5px;outline:none;border:1px solid #754721;color:#faead2;background:linear-gradient(180deg,#2c211a,#17110d);box-shadow:inset 0 2px 7px rgba(0,0,0,.45)}
+input:focus,select:focus{border-color:#dd8b3d;box-shadow:0 0 0 3px rgba(226,119,40,.13),inset 0 2px 7px rgba(0,0,0,.45)}
+input:disabled{opacity:.78;color:#bba88e}
+.error{min-height:1.2em;color:#ff9e91;margin-top:10px}.info,.status{min-height:1.2em;color:#91d7a7;margin-top:10px}
+
+/* STRUCTURE */
 .app{display:flex;min-height:100vh}
-.sidebar{width:310px;flex:0 0 310px;height:100vh;position:sticky;top:0;padding:18px 15px;overflow:auto;background:linear-gradient(180deg,#0c0907,#15100c);border-right:3px solid #613718}
-.brand{padding:18px 14px;margin-bottom:18px;border-radius:15px;text-align:center;border:1px solid #85502a;background:linear-gradient(180deg,#403229,#211913)}
-.brand h1{font-family:"Rye",serif;color:#f0cea2;font-size:1.65rem;margin:6px 0}.brand p{margin:0;color:#af7f4f;font-size:.9rem}
-.userbox{margin-bottom:16px;padding:12px;border:1px solid #654020;border-radius:10px;background:#17100c;color:#cdb392;font-size:.9rem}
-.userbox strong{display:block;color:#f0d1a7;margin-bottom:4px}.role-badge{display:inline-block;padding:4px 8px;border:1px solid #9b6533;border-radius:999px;color:#f4cf9e;font-size:.78rem;margin-top:6px}
-.nav{display:grid;gap:8px}.nav button{width:100%;text-align:left;padding:12px 14px;border-radius:9px;cursor:pointer;border:1px solid #70431f;color:#d1ad86;background:linear-gradient(180deg,#3e291c,#1f150f)}
-.nav button.active{background:linear-gradient(180deg,#b35619,#5c2a0d);border-color:#e78d3d;color:#fff0d9}.nav button:hover{border-color:#c9742f}.logout{margin-top:18px;width:100%}
-.main{flex:1;min-width:0}.topbar{padding:18px 26px;border-bottom:3px solid #613718;background:linear-gradient(180deg,#17100c,#0c0806)}
-.topbar small{letter-spacing:.24em;color:#c48242}.topbar h2{font-family:"Rye",serif;margin:6px 0 0;color:#efc28a}
-.content{max-width:1450px;margin:auto;padding:24px}.page{display:none}.page.active{display:block}
+.sidebar{
+  width:286px;flex:0 0 286px;height:100vh;position:sticky;top:0;padding:14px 13px 18px;overflow:auto;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025),transparent 12%,transparent 88%,rgba(0,0,0,.24)),
+    repeating-linear-gradient(0deg,rgba(104,59,30,.11) 0 2px,transparent 2px 7px),
+    linear-gradient(180deg,#1c120c,#0d0907 46%,#17100c);
+  border-right:4px solid #4a2915;box-shadow:12px 0 30px rgba(0,0,0,.28)
+}
+.sidebar:after{content:"";position:absolute;top:0;right:3px;width:1px;height:100%;background:rgba(225,152,78,.26)}
+.brand{position:relative;padding:17px 12px 15px;margin-bottom:14px;border:1px solid #76502b;text-align:center;background:linear-gradient(180deg,#352219,#19100c);box-shadow:inset 0 0 0 3px #120c08,0 8px 16px rgba(0,0,0,.34)}
+.brand:before{left:7px;top:7px}.brand:after{right:7px;top:7px}
+.brand-emblem{width:62px;height:48px;margin:0 auto 4px;color:#dda85f}
+.brand-emblem svg{width:100%;height:100%}
+.brand h1{font-family:"Rye",serif;color:#f0cea2;font-size:1.48rem;margin:3px 0 5px;text-shadow:0 2px 0 #1a0b05}.brand p{margin:0;color:#ae7f52;font-size:.82rem;letter-spacing:.07em}
+.userbox{margin-bottom:13px;padding:12px 13px;border:1px solid #5c3a20;background:linear-gradient(180deg,#211711,#130d0a);color:#cdb392;font-size:.9rem;box-shadow:inset 0 0 12px rgba(0,0,0,.4)}
+.userbox strong{display:block;color:#f0d1a7;margin-bottom:4px;font-size:1rem}.role-badge{display:inline-block;padding:4px 8px;border:1px solid #8d6037;border-radius:999px;color:#f4cf9e;font-size:.76rem;margin-top:6px;background:#261810}
+.nav{display:grid;gap:6px}.nav button{position:relative;width:100%;text-align:left;padding:12px 14px 12px 17px;cursor:pointer;border:1px solid #4e3522;color:#d8c2a5;background:linear-gradient(180deg,#211a15,#14100d);box-shadow:inset 0 1px rgba(255,255,255,.03);transition:.18s ease}
+.nav button:before{content:"";position:absolute;left:-1px;top:5px;bottom:5px;width:3px;background:transparent;box-shadow:none}
+.nav button.active{background:linear-gradient(90deg,#613313,#2b1b12 68%,#1a120e);border-color:#9a602e;color:#fff1d9;transform:translateX(2px)}
+.nav button.active:before{background:#f09232;box-shadow:0 0 12px #ff8d29}.nav button:hover{border-color:#9b5d2d;color:#fff0d6}.logout{margin-top:15px;width:100%}
+.sidebar-motto{margin-top:14px;padding:13px 10px;text-align:center;border-top:1px solid #4c321f;border-bottom:1px solid #4c321f;color:#9e7a56;font-size:.78rem;letter-spacing:.08em;line-height:1.55}
+.main{flex:1;min-width:0}
+.topbar{position:sticky;top:0;z-index:5;padding:14px 26px 13px;border-bottom:3px solid #4f2d18;background:
+  repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),linear-gradient(180deg,#2a190f,#120c08);box-shadow:0 8px 18px rgba(0,0,0,.32)}
+.topbar small{letter-spacing:.22em;color:#b98a56}.topbar h2{font-family:"Rye",serif;margin:4px 0 0;color:#efc28a;font-size:1.45rem}
+.content{max-width:1480px;margin:auto;padding:22px}.page{display:none}.page.active{display:block}
+
+/* BANNIERE */
+.forge-hero{position:relative;min-height:300px;margin-bottom:18px;border:2px solid #71431e;overflow:hidden;background:
+  linear-gradient(90deg,rgba(0,0,0,.44),rgba(0,0,0,.10) 45%,rgba(0,0,0,.36)),
+  linear-gradient(0deg,rgba(5,3,2,.42),transparent 58%),
+  url('./forge-banner.jpg') center 43%/cover no-repeat,#1c1009;box-shadow:var(--shadow),inset 0 0 0 5px rgba(0,0,0,.34)}
+.forge-hero:before{content:"";position:absolute;inset:0;border:1px solid rgba(232,164,90,.26);margin:8px;pointer-events:none}
+.hero-plaque{position:absolute;left:24px;bottom:22px;max-width:560px;padding:16px 19px;border:1px solid #966033;background:rgba(20,12,8,.88);box-shadow:0 12px 28px rgba(0,0,0,.5),inset 0 0 0 2px rgba(0,0,0,.4)}
+.hero-plaque small{display:block;color:#dda566;letter-spacing:.14em;margin-bottom:5px}.hero-plaque h3{font-family:"Rye",serif;margin:0;color:#f4d5aa;font-size:1.55rem}.hero-plaque p{margin:7px 0 0;color:#cdb497;line-height:1.5}
+
+/* PERIODE */
+.week-banner{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:13px 17px;margin-bottom:18px;border:1px solid #855024;background:
+  linear-gradient(90deg,rgba(0,0,0,.18),transparent 32%,rgba(0,0,0,.2)),linear-gradient(180deg,#3a2518,#21160f);box-shadow:inset 0 0 0 3px rgba(0,0,0,.22),0 8px 18px rgba(0,0,0,.25)}
+.week-banner strong{font-family:"Rye",serif;color:#efc38c}.week-banner span{display:block;color:#bfa88c;margin-top:4px}.closed{color:#ffb08f}.open{color:#88d8a7}
+
+/* STATS */
 .grid{display:grid;gap:16px}.cards{grid-template-columns:repeat(4,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.two{grid-template-columns:repeat(2,minmax(0,1fr))}
-.stat,.panel{border:1px solid #7d4924;border-radius:14px;background:linear-gradient(180deg,#41342b,#261d18);box-shadow:var(--shadow)}
-.stat{padding:18px}.stat .label{font-size:.8rem;color:#c5a987;text-transform:uppercase}.stat .value{font-size:1.8rem;font-weight:800;color:#fff0d8;margin-top:15px}
-.panel{margin-bottom:20px;overflow:hidden}.panel-head{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:15px 20px;border-bottom:1px solid rgba(216,104,31,.16);background:rgba(255,255,255,.02)}
-.panel-head h3{font-family:"Rye",serif;color:#ecc99c;margin:0;font-size:1.18rem}.panel-head p{margin:5px 0 0;color:#baa78e}.panel-body{padding:19px 20px}
-.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.btn{cursor:pointer;padding:10px 14px;border-radius:8px;font-weight:700;border:1px solid #74451f;color:#f3ddbd;background:linear-gradient(180deg,#674126,#412410)}
-.btn.gold{background:linear-gradient(180deg,#c65d1c,#8c400e);border-color:#dc8b3e}.btn.green{background:linear-gradient(180deg,#41885d,#2b6847);border-color:#21553a}.btn.red{background:linear-gradient(180deg,#ab4a3f,#842e25);border-color:#68231c}.btn.blue{background:linear-gradient(180deg,#4f7895,#34566f);border-color:#29475e}.btn:disabled{opacity:.5;cursor:not-allowed}
-.note{padding:13px;border:1px dashed #9a5c29;border-radius:9px;color:#d4bea1;background:rgba(207,86,20,.07)}.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px;border-bottom:1px solid rgba(218,119,38,.13);text-align:left}th{font-size:.78rem;text-transform:uppercase;color:#c7aa86}td{color:#ead8c0}.money{text-align:right}.empty{text-align:center;padding:25px;color:#ad9982;font-style:italic}
-.tax-row{display:flex;justify-content:space-between;gap:15px;padding:14px 3px;border-bottom:1px solid rgba(218,119,38,.14)}.tax-row.final{margin-top:8px;border:1px solid #a8612b;border-radius:9px;padding:16px;background:rgba(211,85,19,.09)}
-.week-banner{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 18px;margin-bottom:18px;border-radius:12px;border:1px solid #855024;background:linear-gradient(90deg,#2e211a,#3e2b20,#281d17)}
-.week-banner strong{font-family:"Rye",serif;color:#efc38c}.week-banner span{display:block;color:#bfa88c;margin-top:4px}.closed{color:#ffb08f}.open{color:#88d8a7}.history-card{padding:14px;border:1px solid #73441f;border-radius:10px;background:#241a15;margin-bottom:10px}
-.history-card strong{color:#f0cf9f}.history-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.history-grid div{background:#19110e;border-radius:8px;padding:9px}.history-grid small{display:block;color:#a89278}.history-grid b{color:#f1dfc4}
-@media(max-width:1000px){.sidebar{width:240px;flex-basis:240px}.cards{grid-template-columns:repeat(2,1fr)}.history-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:720px){.app{display:block}.sidebar{width:100%;height:auto;position:relative}.nav{grid-template-columns:1fr 1fr}.content{padding:13px}.cards,.three,.two,.history-grid{grid-template-columns:1fr}.week-banner{align-items:flex-start;flex-direction:column}}
+.stat{position:relative;min-height:138px;padding:18px 18px 17px 82px;border:2px solid #7e5b34;background:
+  radial-gradient(circle at 80% 10%,rgba(255,255,255,.18),transparent 24%),
+  repeating-linear-gradient(0deg,rgba(90,50,20,.055) 0 1px,transparent 1px 4px),
+  linear-gradient(180deg,#ddc292,#c6a473);color:#23170f;box-shadow:0 13px 28px rgba(0,0,0,.35),inset 0 0 0 4px rgba(72,39,17,.18)}
+.stat:before{left:8px;top:8px}.stat:after{right:8px;top:8px}.stat-icon{position:absolute;left:18px;top:31px;width:48px;height:48px;display:grid;place-items:center;border:1px solid #8c6035;background:linear-gradient(180deg,#3a281d,#1d140f);color:#edbd78;box-shadow:inset 0 0 12px #000,0 4px 9px rgba(0,0,0,.25)}
+.stat-icon svg{width:29px;height:29px}.stat .label{font-size:.78rem;color:#5d4027;text-transform:uppercase;letter-spacing:.07em;font-weight:800}.stat .value{font-size:1.65rem;font-weight:900;color:#1b120c;margin-top:16px;text-shadow:0 1px rgba(255,255,255,.38)}
+
+/* PANNEAUX */
+.panel{position:relative;margin-bottom:20px;overflow:hidden;border:1px solid #6b4628;background:linear-gradient(180deg,#201a16,#14100d);box-shadow:var(--shadow),inset 0 0 0 3px rgba(0,0,0,.24)}
+.panel:before{left:8px;top:8px}.panel:after{right:8px;top:8px}.panel-head{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:15px 20px;border-bottom:1px solid #5d3d24;background:
+  repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 4px),linear-gradient(180deg,#332219,#20150f)}
+.panel-head h3{font-family:"Rye",serif;color:#ecc99c;margin:0;font-size:1.14rem}.panel-head p{margin:5px 0 0;color:#baa78e}.panel-body{padding:19px 20px;background:linear-gradient(180deg,rgba(255,255,255,.012),rgba(0,0,0,.08))}
+.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.btn{cursor:pointer;padding:10px 14px;border-radius:4px;font-weight:700;border:1px solid #74451f;color:#f3ddbd;background:linear-gradient(180deg,#674126,#412410);box-shadow:inset 0 1px rgba(255,255,255,.11),0 3px 7px rgba(0,0,0,.25);transition:.16s ease}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn.gold{background:linear-gradient(180deg,#bb5a1d,#77350c);border-color:#d07c34}.btn.green{background:linear-gradient(180deg,#477d59,#28583c);border-color:#396c4b}.btn.red{background:linear-gradient(180deg,#99463b,#6f2b25);border-color:#7b332a}.btn.blue{background:linear-gradient(180deg,#52768d,#304e61);border-color:#42677d}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.note{padding:13px 15px;border:1px dashed #9a6938;color:#d8c5aa;background:linear-gradient(180deg,rgba(152,96,45,.12),rgba(80,43,20,.08));line-height:1.5}.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:760px;background:#15110e}th,td{padding:11px 10px;border-bottom:1px solid rgba(218,119,38,.13);text-align:left}th{font-size:.77rem;text-transform:uppercase;color:#d0ad81;background:#21160f;letter-spacing:.04em}td{color:#ead8c0}tbody tr:nth-child(even){background:rgba(255,255,255,.015)}tbody tr:hover{background:rgba(201,92,26,.06)}.money{text-align:right}.empty{text-align:center;padding:25px;color:#ad9982;font-style:italic}
+.tax-row{display:flex;justify-content:space-between;gap:15px;padding:14px 8px;border-bottom:1px solid rgba(218,119,38,.14)}.tax-row:nth-child(odd){background:rgba(255,255,255,.015)}.tax-row.final{margin-top:8px;border:1px solid #a8612b;padding:16px;background:linear-gradient(180deg,rgba(211,85,19,.12),rgba(96,43,14,.09));font-size:1.05rem}
+.history-card{padding:14px;border:1px solid #6f4929;background:linear-gradient(180deg,#241914,#17100d);margin-bottom:10px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.24)}.history-card strong{color:#f0cf9f}.history-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.history-grid div{background:#100d0b;border:1px solid #3f2c1f;padding:9px}.history-grid small{display:block;color:#a89278}.history-grid b{color:#f1dfc4}
+
+/* PETITS ORNEMENTS */
+.section-ornament{display:flex;align-items:center;gap:12px;color:#9c6738;margin:16px 0}.section-ornament:before,.section-ornament:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,#7d4a24,transparent)}.section-ornament span{font-size:1.15rem;color:#c58a4b}
+
+@media(max-width:1100px){.sidebar{width:245px;flex-basis:245px}.cards{grid-template-columns:repeat(2,1fr)}.history-grid{grid-template-columns:repeat(2,1fr)}.forge-hero{min-height:250px}}
+@media(max-width:760px){.app{display:block}.sidebar{width:100%;height:auto;position:relative;border-right:0;border-bottom:3px solid #4a2915}.nav{grid-template-columns:1fr 1fr}.topbar{position:relative}.content{padding:12px}.cards,.three,.two,.history-grid{grid-template-columns:1fr}.week-banner{align-items:flex-start;flex-direction:column}.forge-hero{min-height:230px}.hero-plaque{left:12px;right:12px;bottom:12px;max-width:none}.stat{min-height:120px}.brand{margin-bottom:10px}}
+
 </style>
 </head>
 <body>
 <section id="loginScreen" class="login-screen">
   <div class="login-card">
+    <div class="login-crest" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 44h44M18 44l4-8h20l4 8M24 36l-3-8h22l-3 8M28 28V18h8v10"/>
+        <path d="M15 20l13 13M49 20L36 33"/>
+        <path d="M10 17l7-7 5 5-7 7zM54 17l-7-7-5 5 7 7z"/>
+      </svg>
+    </div>
     <h1>Forge de McFarlane's</h1>
     <div class="subtitle">Accès au registre de gestion</div>
     <div id="configWarning" class="note hidden" style="margin-bottom:15px">Configure <strong>config.js</strong> avec ton projet Supabase.</div>
@@ -70,24 +177,34 @@ table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px
 
 <div id="app" class="app hidden">
   <aside class="sidebar">
-    <div class="brand"><h1>McFARLANE'S</h1><p>Forge • Livre de comptes</p></div>
+    <div class="brand">
+      <div class="brand-emblem" aria-hidden="true">
+        <svg viewBox="0 0 90 62" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 46h66M23 46l6-11h32l6 11M33 35l-5-10h34l-5 10"/>
+          <path d="M27 10l18 18M63 10L45 28"/>
+          <path d="M17 10l9-7 7 8-9 7zM73 10l-9-7-7 8 9 7z"/>
+        </svg>
+      </div>
+      <h1>McFARLANE'S</h1><p>FORGE • TRADITION • DEPUIS 1900</p>
+    </div>
     <div class="userbox"><strong id="currentName">—</strong><span class="role-badge" id="currentRole">—</span></div>
     <div class="nav">
-      <button class="active" data-page="dashboard">⚒ Tableau de bord</button>
-      <button data-page="profil">👤 Mon profil</button>
-      <button data-page="commandes">📜 Commandes</button>
-      <button data-page="echoppe">🧾 Échoppe</button>
-      <button data-page="charges">⛏ Charges</button>
-      <button data-page="taxes">💰 Taxes</button>
-      <button data-page="historique">🗄 Historique</button>
-      <button data-page="membres" id="membersNav" class="hidden">👥 Membres</button>
+      <button class="active" data-page="dashboard">⌂ Tableau de bord</button>
+      <button data-page="profil">♙ Mon profil</button>
+      <button data-page="commandes">▤ Commandes</button>
+      <button data-page="echoppe">▣ Échoppe</button>
+      <button data-page="charges">⚒ Charges</button>
+      <button data-page="taxes">$ Taxes</button>
+      <button data-page="historique">◫ Historique</button>
+      <button data-page="membres" id="membersNav" class="hidden">♟ Membres</button>
       <button data-page="parametres" id="settingsNav" class="hidden">⚙ Paramètres</button>
     </div>
+    <div class="sidebar-motto">DU FER • DU FEU • DU TRAVAIL<br>UN MEILLEUR DEMAIN</div>
     <button class="btn red logout" onclick="logout()">Déconnexion</button>
   </aside>
 
   <main class="main">
-    <header class="topbar"><small>REGISTRE DE GESTION DE LA FORGE</small><h2 id="pageTitle">Tableau de bord</h2></header>
+    <header class="topbar"><small>DES OUTILS SOLIDES • DES COMPTES SAINS • UN AVENIR FORGÉ</small><h2 id="pageTitle">Tableau de bord</h2></header>
     <div class="content">
       <div class="week-banner">
         <div><strong>Période comptable en cours</strong><span id="currentPeriodLabel">Chargement…</span></div>
@@ -95,14 +212,37 @@ table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 9px
       </div>
 
       <section class="page active" id="dashboard">
-        <div class="grid cards">
-          <div class="stat"><div class="label">Commandes</div><div class="value" id="dashOrders">0,00 $</div></div>
-          <div class="stat"><div class="label">Échoppe</div><div class="value" id="dashShop">0,00 $</div></div>
-          <div class="stat"><div class="label">Charges</div><div class="value" id="dashExpenses">0,00 $</div></div>
-          <div class="stat"><div class="label">Bénéfice net</div><div class="value" id="dashNet">0,00 $</div></div>
+        <div class="forge-hero" aria-label="Atelier de la Forge de McFarlane's">
+          <div class="hero-plaque">
+            <small>REGISTRE DE GESTION</small>
+            <h3>Forge de McFarlane's</h3>
+            <p>Le feu façonne le métal. La discipline façonne la forge.</p>
+          </div>
         </div>
-        <div class="panel"><div class="panel-head"><div><h3>État du registre</h3><p id="weekDash"></p></div></div><div class="panel-body"><div class="note">La semaine comptable va du vendredi au jeudi. À la clôture, les chiffres sont figés et archivés.</div></div></div>
-        <div class="panel"><div class="panel-head"><div><h3>Dernières commandes</h3></div></div><div class="panel-body table-wrap" id="latestOrders"></div></div>
+
+        <div class="grid cards">
+          <div class="stat">
+            <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5h14v22H8zM11 10h8M11 15h8M11 20h5"/></svg></div>
+            <div class="label">Commandes</div><div class="value" id="dashOrders">0,00 $</div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 12h20l-2-6H8zM8 12v14h16V12M12 26v-8h8v8"/><path d="M6 12c0 3 4 3 4 0 0 3 4 3 4 0 0 3 4 3 4 0 0 3 4 3 4 0 0 3 4 3 4 0"/></svg></div>
+            <div class="label">Échoppe</div><div class="value" id="dashShop">0,00 $</div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="5"/><circle cx="20" cy="20" r="5"/><path d="M7 10v6c0 3 10 3 10 0v-6M15 20v5c0 3 10 3 10 0v-5"/></svg></div>
+            <div class="label">Charges</div><div class="value" id="dashExpenses">0,00 $</div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4v24M21 9c-1-2-3-3-5-3-3 0-5 2-5 4 0 6 10 3 10 9 0 3-2 5-6 5-2 0-5-1-6-3"/></svg></div>
+            <div class="label">Bénéfice net</div><div class="value" id="dashNet">0,00 $</div>
+          </div>
+        </div>
+
+        <div class="section-ornament"><span>⚒</span></div>
+
+        <div class="panel"><div class="panel-head"><div><h3>État du registre</h3><p id="weekDash"></p></div></div><div class="panel-body"><div class="note">La semaine comptable va du vendredi au jeudi. À la clôture, les chiffres sont figés et archivés dans le registre historique.</div></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Dernières commandes</h3><p>Les derniers travaux consignés à la forge.</p></div></div><div class="panel-body table-wrap" id="latestOrders"></div></div>
       </section>
 
       <section class="page" id="profil">
